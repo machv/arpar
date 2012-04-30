@@ -12,5 +12,6 @@ namespace Arpar
     {
         public ArgumentAttribute Attribute;
         public List<ArgumentAliasAttribute> Aliases = new List<ArgumentAliasAttribute>();
+        public Type Type;
     }
 }

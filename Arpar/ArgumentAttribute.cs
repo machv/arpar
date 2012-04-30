@@ -5,9 +5,17 @@ using System.Text;
 
 namespace Arpar
 {
-    [AttributeUsage(AttributeTargets.All)]
+    /// <summary>
+    /// Attribute for altering argument behaviour.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class ArgumentAttribute : System.Attribute
     {
+        /// <summary>
+        /// Argument name.
+        /// </summary>
+        public string Name { get; set; }
+
         /// <summary>
         /// Type of agrument (Long/Short.)
         /// </summary>
@@ -27,24 +35,33 @@ namespace Arpar
         /// Požadavky na hodnotu parametru
         /// </summary>
         public ParameterRequirements ParameterRequirements { get; set; }
-        public object Value { get; internal set; }
-        //public List<string> Names { get; set; }
 
-        public string Name { get; set; }
+        /// <summary>
+        /// Low bound for integer value.
+        /// </summary>
+        public int LowBound { get; set; }
 
+        /// <summary>
+        /// High bound for integer value.
+        /// </summary>
+        public int HighBound { get; set; }
+
+        ArgumentAttribute()
+        {
+            HighBound = int.MaxValue;
+            LowBound = int.MinValue;
+        }
+
+        public ArgumentAttribute(string name)
+            : this(name, ArgumentType.Long)
+        {
+        }
 
         public ArgumentAttribute(string name, ArgumentType type)
+            : this()
         {
             Name = name;
             Type = type;
         }
-
-        public ArgumentAttribute(string name)
-        {
-            Name = name;
-            Type = ArgumentType.Long;
-        }
-
-
     }
 }

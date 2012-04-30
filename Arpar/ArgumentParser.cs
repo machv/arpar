@@ -52,12 +52,14 @@ namespace Arpar
                     {
                         ArgumentAliasAttribute alias = attribute as ArgumentAliasAttribute;
 
+                        //todo: kontrolovat, jestli uz tenhle alias neni pridan (jak pro tenhle argument, tak pro jiny)
                         arg.Aliases.Add(alias);
                     }
                 }
 
                 if (arg.Attribute != null)
                 {
+                    arg.Type = info.FieldType;
                     arguments.Add(arg);
                 }
             }
