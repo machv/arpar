@@ -11,14 +11,12 @@ namespace TestApplication
     {
         static void Main(string[] args)
         {
-            Options o = new Options();
+            Settings sett = new Settings();
+            ArgumentParser arpar = new ArgumentParser(sett);
 
+            arpar.GenerateDocumentation();
 
-
-            //o.Parse(args);
-
-            Option<string> opt = new Option<string> { Type = Arpar.TypParametru.Long, IsMandatory = true };
-            //opt.setConstraints(...)
+            arpar.Parse(args);
         }
     }
 }
