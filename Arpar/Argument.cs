@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Arpar
@@ -13,5 +14,6 @@ namespace Arpar
         public ArgumentAttribute Attribute;
         public List<ArgumentAliasAttribute> Aliases = new List<ArgumentAliasAttribute>();
         public Type Type;
+        public FieldInfo Info;
     }
 }

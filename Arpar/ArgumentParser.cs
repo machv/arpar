@@ -37,7 +37,7 @@ namespace Arpar
             foreach (FieldInfo info in infos)
             {
                 Argument arg = new Argument();
-                Console.WriteLine(info.Name);
+
                 object[] attributes = info.GetCustomAttributes(false);
                 foreach (object attribute in attributes)
                 {
@@ -60,6 +60,7 @@ namespace Arpar
                 if (arg.Attribute != null)
                 {
                     arg.Type = info.FieldType;
+                    arg.Info = info;
                     arguments.Add(arg);
                 }
             }
@@ -67,7 +68,7 @@ namespace Arpar
 
         public void GenerateDocumentation()
         {
-            foreach(Argument argument in arguments)
+            foreach (Argument argument in arguments)
             {
                 string prefix = GetArgumentPrefix(argument.Attribute.Type);
                 Console.WriteLine("  " + prefix + argument.Attribute.Name + ": " + argument.Attribute.Description);
@@ -104,25 +105,23 @@ namespace Arpar
                 throw new InvalidOperationException("Missing parameters to parse.");
             }
 
-            Type type = ObjectToFill.GetType();
+            //TODO: do parse
 
-            FieldInfo[] infos = type.GetFields();
-
-            foreach (FieldInfo info in infos)
+            int i = 0;
+            foreach (string arg in ConsoleArgs)
             {
-                object[] attributes = info.GetCustomAttributes(false);
-                foreach (object attribute in attributes)
+                foreach (Argument argument in arguments)
                 {
-                    if (attribute is ArgumentAttribute)
+                    if ((GetArgumentPrefix(argument.Attribute.Type) + argument.Attribute.Name) == arg)
                     {
-                        ArgumentAttribute attr = attribute as ArgumentAttribute;
-                        Console.WriteLine(attr.Description);
+                        if (argument.Type == typeof(string))
+                        {
+                            argument.Info.SetValue(ObjectToFill, ConsoleArgs[i + 1]);
+                        }
                     }
                 }
+                i++;
             }
-
-
-            //TODO: do parse
         }
 
     }

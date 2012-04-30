@@ -46,6 +46,9 @@ namespace Arpar
         /// </summary>
         public int HighBound { get; set; }
 
+        /// <summary>
+        /// Private constructor for setting default values of properties because attributes cannot use nullable types.
+        /// </summary>
         ArgumentAttribute()
         {
             HighBound = int.MaxValue;
