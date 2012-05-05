@@ -14,6 +14,7 @@ namespace Arpar
         protected string ShortOptionPrefix = "-";
         protected string LongOptionPrefix = "--";
         protected string Splitter = "--";
+        protected char ValueDelimiter = '=';
         protected object ObjectToFill;
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace Arpar
                         break;
                     case CommandLineArgumentType.Common:
                         CommonArguments.Add(CurrentArg);
-                        break;
+                        continue;
                     case CommandLineArgumentType.Splitter:
                         CopyRest(ConsoleArgs, CommonArguments, index + 1);
                         index = ConsoleArgs.Length;
@@ -175,6 +176,13 @@ namespace Arpar
                 }
 
                 Argument argument;
+                string value = null;
+
+                if(ArgumentContainsValue(TrimmedArg))
+                {
+                    value = GetValueFromArgument(TrimmedArg);
+                    TrimmedArg = TrimValueFromArgument(TrimmedArg);
+                }
 
                 if (ArgumentsByName.ContainsKey(TrimmedArg))
                 {
@@ -182,19 +190,26 @@ namespace Arpar
                 }
                 else
                 {
-                    argument = null;
+                    //argument = null;
                     throw new ArgumentException("Argument " + CurrentArg + " is not supported");
                 }
 
-                bool isValue = NextArgumentIsValue(ConsoleArgs, index);
+                bool isValue = NextArgumentIsValue(ConsoleArgs, index) || value != null;
                 ParameterRequirements valueRequirements = argument.Attribute.ParameterRequirements;
 
                 if(isValue && valueRequirements != ParameterRequirements.Denied)
                 {
-                    index++;
-                    LoadValue(argument, ObjectToFill, ConsoleArgs[index]);
+                    if (value == null)
+                    {
+                        index++;
+                        LoadValue(argument, ConsoleArgs[index]);
+                    }
+                    else
+                    {
+                        LoadValue(argument, value);
+                    }
                 }
-                else if(!isValue && valueRequirements == ParameterRequirements.Mandatory)
+                else if (!isValue && valueRequirements == ParameterRequirements.Mandatory)
                 {
                     throw new ArgumentException("Value for argument " + CurrentArg + " is Mandatory and has been omitted");
                 }
@@ -243,6 +258,16 @@ namespace Arpar
             return TrimmedArg;
         }
 
+        private string TrimValueFromArgument(string arg)
+        {
+            int index = arg.IndexOf(ValueDelimiter);
+
+            string argument = arg.Remove(index);
+
+            return argument;
+
+        }
+
         private void CopyRest(string[] source, List<string> destination, int start)
         {
             for (int index = start; index < source.Length; index++)
@@ -264,20 +289,42 @@ namespace Arpar
                 return true;
 
             return false;
+        }
+        
+        private bool ArgumentContainsValue(string arg)
+        {
+            int index = arg.IndexOf(ValueDelimiter);
 
+            // the index has not to be the last position of the string, therefor the -1.
+            if (index > 0 && index < arg.Length - 1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        private void LoadValue(Argument argument, Object objectToFill, string value) // TODO: hodnota muze byt skryta v tom argumentu ne az v tom dalsim.
+        private string GetValueFromArgument(string arg)
+        {
+            int index = arg.IndexOf(ValueDelimiter);
+
+            // Wew have to remove the '=' character, therefor the +1.
+            string value = arg.Remove(0, index + 1);
+
+            return value;
+        }
+
+        private void LoadValue(Argument argument, string value)
         {
             if (argument.Type == typeof(string))
             {
                 if (argument.Attribute.ListOfString == null)
                 {
-                    argument.Info.SetValue(objectToFill, value);
+                    argument.Info.SetValue(ObjectToFill, value);
                 }
                 else if (argument.Attribute.ListOfString.Contains(value))
                 {
-                    argument.Info.SetValue(objectToFill, value);
+                    argument.Info.SetValue(ObjectToFill, value);
                 }
                 else
                 {
@@ -291,7 +338,7 @@ namespace Arpar
 
                 if (intValue >= argument.Attribute.LowBound && intValue <= argument.Attribute.HighBound)
                 {
-                    argument.Info.SetValue(objectToFill, intValue);
+                    argument.Info.SetValue(ObjectToFill, intValue);
                 }
                 else
                 {
@@ -301,7 +348,7 @@ namespace Arpar
             else if (argument.Type == typeof(bool))
             {
                 bool boolValue = bool.Parse(value);
-                argument.Info.SetValue(objectToFill, boolValue);
+                argument.Info.SetValue(ObjectToFill, boolValue);
             }
             else
             {

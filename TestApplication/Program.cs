@@ -21,7 +21,7 @@ namespace TestApplication
             arpar.GenerateDocumentation();
 
             //arpar.Parse(args);
-            arpar.Parse("--text nazdar -bs GAMA");
+            arpar.Parse("--text nazdar -bs=GAMA");
 
             Console.WriteLine(sett.Greetings);
             Console.WriteLine(sett.BoundedString);
