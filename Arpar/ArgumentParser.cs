@@ -148,10 +148,6 @@ namespace Arpar
                 throw new InvalidOperationException("Missing parameters to parse.");
             }
 
-            //TODO: do parse
-
-            // Můžeš použít i Dictionary ArgumentsByName, kde klíčem jsou jména argumentů a hodnotou je objekt Argument, mělo by to být rychlejší na prohledávání :-)
-
             for (int index = 0; index < ConsoleArgs.Length; index++)
             {
                 string CurrentArg = ConsoleArgs[index];
@@ -175,47 +171,56 @@ namespace Arpar
                         continue;
                 }
 
-                Argument argument;
-                string value = null;
+                bool nextArgumentProcessed = TryLoadValueMoveIndex(TrimmedArg, ConsoleArgs, index);
 
-                if(ArgumentContainsValue(TrimmedArg))
-                {
-                    value = GetValueFromArgument(TrimmedArg);
-                    TrimmedArg = TrimValueFromArgument(TrimmedArg);
-                }
-
-                if (ArgumentsByName.ContainsKey(TrimmedArg))
-                {
-                    argument = ArgumentsByName[TrimmedArg];
-                }
-                else
-                {
-                    //argument = null;
-                    throw new ArgumentException("Argument " + CurrentArg + " is not supported");
-                }
-
-                bool isValue = NextArgumentIsValue(ConsoleArgs, index) || value != null;
-                ParameterRequirements valueRequirements = argument.Attribute.ParameterRequirements;
-
-                if(isValue && valueRequirements != ParameterRequirements.Denied)
-                {
-                    if (value == null)
-                    {
-                        index++;
-                        LoadValue(argument, ConsoleArgs[index]);
-                    }
-                    else
-                    {
-                        LoadValue(argument, value);
-                    }
-                }
-                else if (!isValue && valueRequirements == ParameterRequirements.Mandatory)
-                {
-                    throw new ArgumentException("Value for argument " + CurrentArg + " is Mandatory and has been omitted");
-                }
+                if (nextArgumentProcessed)
+                    index++;
 
             }
 
+        }
+
+        private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index)
+        {
+            Argument argument;
+            string value = null;
+
+            if (ArgumentContainsValue(arg))
+            {
+                value = GetValueFromArgument(arg);
+                arg = TrimValueFromArgument(arg);
+            }
+
+            if (ArgumentsByName.ContainsKey(arg))
+            {
+                argument = ArgumentsByName[arg];
+            }
+            else
+            {
+                throw new ArgumentException("Argument " + arg + " is not supported");
+            }
+
+            bool isValue = NextArgumentIsValue(ConsoleArgs, index) || value != null;
+            ParameterRequirements valueRequirements = argument.Attribute.ParameterRequirements;
+
+            if (isValue && valueRequirements != ParameterRequirements.Denied)
+            {
+                if (value == null)
+                {
+                    LoadValue(argument, ConsoleArgs[index+1]);
+                    return true;
+                }
+                else
+                {
+                    LoadValue(argument, value);
+                }
+            }
+            else if (!isValue && valueRequirements == ParameterRequirements.Mandatory)
+            {
+                throw new ArgumentException("Value for argument " + arg + " is Mandatory and has been omitted");
+            }
+
+            return false;
         }
 
         private CommandLineArgumentType DetermineArgumentType(String arg)
