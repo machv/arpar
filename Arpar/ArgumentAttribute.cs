@@ -37,7 +37,7 @@ namespace Arpar
         /// <summary>
         /// Požadavky na hodnotu parametru
         /// </summary>
-        public ParameterRequirements ParameterRequirements { get; set; }
+        public ParameterRequirements ValueRequirements { get; set; }
 
         /// <summary>
         /// Low bound for integer value.

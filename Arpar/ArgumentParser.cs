@@ -28,7 +28,7 @@ namespace Arpar
         public string[] ConsoleArgs { get; set; }
         protected List<Argument> arguments = new List<Argument>();
 
-        protected List<String> CommonArguments { get; private set; }
+        public List<String> CommonArguments { get; protected set; }
 
         /// <summary>
         /// Constructor.
@@ -180,7 +180,7 @@ namespace Arpar
 
         }
 
-        private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index)
+        private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index) // TODO: pokud bude nutno rozlisovat - a -- jako prefix, musi se sem pridat parametr s typem nacteneho argumentu
         {
             Argument argument;
             string value = null;
@@ -200,8 +200,8 @@ namespace Arpar
                 throw new ArgumentException("Argument " + arg + " is not supported");
             }
 
-            bool isValue = NextArgumentIsValue(ConsoleArgs, index) || value != null;
-            ParameterRequirements valueRequirements = argument.Attribute.ParameterRequirements;
+            bool isValue = NextArgumentIsValue(ConsoleArgs, index, argument.Type) || value != null;
+            ParameterRequirements valueRequirements = argument.Attribute.ValueRequirements;
 
             if (isValue && valueRequirements != ParameterRequirements.Denied)
             {
@@ -218,6 +218,15 @@ namespace Arpar
             else if (!isValue && valueRequirements == ParameterRequirements.Mandatory)
             {
                 throw new ArgumentException("Value for argument " + arg + " is Mandatory and has been omitted");
+            }
+            else if (valueRequirements == ParameterRequirements.Denied)
+            {
+                if(value != null)
+                {
+                    throw new ArgumentException("Argument " + arg + " has denied value specification");
+                }
+                
+                argument.Info.SetValue(ObjectToFill, true);
             }
 
             return false;
@@ -281,18 +290,31 @@ namespace Arpar
             }
         }
 
-        private bool NextArgumentIsValue(string[] args, int index)
+        private bool NextArgumentIsValue(string[] args, int index, Type type)
         {
             index++;
 
             if (index >= args.Length)
                 return false;
 
-            CommandLineArgumentType ArgType = DetermineArgumentType(args[index]);
+            string arg = args[index];
 
+            if (type == typeof(int))
+            {
+                int outValue;
+                return int.TryParse(arg, out outValue);
+            }
+            /*else if (type == typeof(string)) // TODO: rozhodnout se, co je spravne, jestli jako hodnotu pro string brat cokoli, nebo jen to co nezacina pomlckami
+            {
+                return true;
+            }*/
+
+
+            CommandLineArgumentType ArgType = DetermineArgumentType(arg);
+            
             if (ArgType == CommandLineArgumentType.Common)
                 return true;
-
+            
             return false;
         }
         
