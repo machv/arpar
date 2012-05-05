@@ -27,6 +27,8 @@ namespace Arpar
         public string[] ConsoleArgs { get; set; }
         protected List<Argument> arguments = new List<Argument>();
 
+        protected List<String> CommonArguments { get; private set; }
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -129,6 +131,8 @@ namespace Arpar
         {
             ConsoleArgs = args;
 
+            CommonArguments = new List<string>();
+
             if (ConsoleArgs == null)
             {
                 throw new InvalidOperationException("Missing parameters to parse.");
@@ -137,6 +141,24 @@ namespace Arpar
             //TODO: do parse
 
             // Můžeš použít i Dictionary ArgumentsByName, kde klíčem jsou jména argumentů a hodnotou je objekt Argument, mělo by to být rychlejší na prohledávání :-)
+
+            for (int index = 0; index < ConsoleArgs.Length; index++)
+            {
+                CommandLineArgumentType argumentType = DetermineArgumentType(ConsoleArgs[index]);
+
+                switch (argumentType)
+                {
+                    case CommandLineArgumentType.Short:
+                        break;
+                    case CommandLineArgumentType.Long:
+                        break;
+                    case CommandLineArgumentType.Common:
+                        break;
+                    case CommandLineArgumentType.Splitter:
+                        break;
+                }
+
+            }
 
             int i = 0;
             foreach (string arg in ConsoleArgs)
@@ -166,6 +188,29 @@ namespace Arpar
                 }
                  */
                 i++;
+            }
+        }
+
+        private CommandLineArgumentType DetermineArgumentType(String arg)
+        {
+            if (arg == null)
+                throw new ArgumentNullException("Argument in function DetermineArgumentType has not to be null.");
+
+            if(arg.Equals(Splitter))
+            {
+                return CommandLineArgumentType.Splitter;
+            }
+            else if (arg.StartsWith(LongOptionPrefix))
+            {
+                return CommandLineArgumentType.Long;
+            }
+            else if (arg.StartsWith(ShortOptionPrefix))
+            {
+                return CommandLineArgumentType.Short;
+            }
+            else
+            {
+                return CommandLineArgumentType.Common;
             }
         }
 

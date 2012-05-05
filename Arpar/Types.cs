@@ -11,4 +11,6 @@ namespace Arpar
     /// Typy parametrů
     /// </summary>
     public enum ParameterRequirements { Mandatory, Optional, Denied }
+
+    public enum CommandLineArgumentType { Short, Long, Splitter, Common }
 }

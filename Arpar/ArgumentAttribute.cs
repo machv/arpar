@@ -39,7 +39,7 @@ namespace Arpar
         /// <summary>
         /// Low bound for integer value.
         /// </summary>
-        public int LowBound { get; set; }
+        public int LowBound { get; set; } // toto neni treba u vsech parametru, co to mit az v nejake tride, ktera bude dedit od ArgumentAttribute?
 
         /// <summary>
         /// High bound for integer value.
