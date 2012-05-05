@@ -127,7 +127,7 @@ namespace Arpar
         /// 
         /// </summary>
         /// <param name="args"></param>
-        public void Parse(string[] args)
+        public void Parse(string[] args) // TODO: parser muze vyhodit vyjimku pri parsovani intu a boolu. Je to treba zdokumentovat.
         {
             ConsoleArgs = args;
 
@@ -144,51 +144,54 @@ namespace Arpar
 
             for (int index = 0; index < ConsoleArgs.Length; index++)
             {
-                CommandLineArgumentType argumentType = DetermineArgumentType(ConsoleArgs[index]);
+                string CurrentArg = ConsoleArgs[index];
+                string TrimmedArg = null;
+                CommandLineArgumentType argumentType = DetermineArgumentType(CurrentArg);
 
                 switch (argumentType)
                 {
                     case CommandLineArgumentType.Short:
+                        TrimmedArg = TrimArgumentPrefix(CurrentArg, ArgumentType.Short);
                         break;
                     case CommandLineArgumentType.Long:
+                        TrimmedArg = TrimArgumentPrefix(CurrentArg, ArgumentType.Long);
                         break;
                     case CommandLineArgumentType.Common:
+                        CommonArguments.Add(CurrentArg);
                         break;
                     case CommandLineArgumentType.Splitter:
-                        break;
+                        CopyRest(ConsoleArgs, CommonArguments, index + 1);
+                        index = ConsoleArgs.Length;
+                        continue;
+                }
+
+                Argument argument;
+
+                if (ArgumentsByName.ContainsKey(TrimmedArg))
+                {
+                    argument = ArgumentsByName[TrimmedArg];
+                }
+                else
+                {
+                    argument = null;
+                    throw new ArgumentException("Argument " + CurrentArg + " is not supported");
+                }
+
+                bool isValue = NextArgumentIsValue(ConsoleArgs, index);
+                ParameterRequirements valueRequirements = argument.Attribute.ParameterRequirements;
+
+                if(isValue && valueRequirements != ParameterRequirements.Denied)
+                {
+                    index++;
+                    LoadValue(argument, ObjectToFill, ConsoleArgs[index]);
+                }
+                else if(!isValue && valueRequirements == ParameterRequirements.Mandatory)
+                {
+                    throw new ArgumentException("Value for argument " + CurrentArg + " is Mandatory and has been omitted");
                 }
 
             }
 
-            int i = 0;
-            foreach (string arg in ConsoleArgs)
-            {
-                string argumentName = StripArgumentPrefix(arg);
-
-                if (ArgumentsByName.ContainsKey(argumentName))
-                {
-                    Argument argument = ArgumentsByName[argumentName];
-
-                    if (argument.Type == typeof(string))
-                    {
-                        argument.Info.SetValue(ObjectToFill, ConsoleArgs[i + 1]);
-                    }
-                }
-
-                /*
-                foreach (Argument argument in arguments)
-                {
-                    if ((GetArgumentPrefix(argument.Attribute.Type) + argument.Attribute.Name) == arg)
-                    {
-                        if (argument.Type == typeof(string))
-                        {
-                            argument.Info.SetValue(ObjectToFill, ConsoleArgs[i + 1]);
-                        }
-                    }
-                }
-                 */
-                i++;
-            }
         }
 
         private CommandLineArgumentType DetermineArgumentType(String arg)
@@ -214,11 +217,77 @@ namespace Arpar
             }
         }
 
-        private string StripArgumentPrefix(string arg)
+        private string TrimArgumentPrefix(string arg, ArgumentType type)
         {
-            //TODO: tohle udělat pořádně, zatím to je jen quick solution
-            return arg.TrimStart(new char[] { '-' });
+            string TrimmedArg = null;
+
+            switch (type)
+            {
+                case ArgumentType.Short:
+                    TrimmedArg = arg.Remove(0, ShortOptionPrefix.Length);
+                    break;
+                case ArgumentType.Long:
+                    TrimmedArg = arg.Remove(0, LongOptionPrefix.Length);
+                    break;
+            }
+
+            return TrimmedArg;
+        }
+
+        private void CopyRest(string[] source, List<string> destination, int start)
+        {
+            for (int index = start; index < source.Length; index++)
+            {
+                destination.Add(source[index]);
+            }
+        }
+
+        private bool NextArgumentIsValue(string[] args, int index)
+        {
+            index++;
+
+            if (index >= args.Length)
+                return false;
+
+            CommandLineArgumentType ArgType = DetermineArgumentType(args[index]);
+
+            if (ArgType == CommandLineArgumentType.Common)
+                return true;
+
+            return false;
+
+        }
+
+        private void LoadValue(Argument argument, Object objectToFill, string value) // TODO: hodnota muze byt skryta v tom argumentu ne az v tom dalsim.
+        {
+            if (argument.Type == typeof(string))
+            {
+                argument.Info.SetValue(objectToFill, value);
+            }
+            else if (argument.Type == typeof(int))
+            {
+                int intValue = int.Parse(value);
+
+                if (intValue >= argument.Attribute.LowBound && intValue <= argument.Attribute.HighBound)
+                {
+                    argument.Info.SetValue(objectToFill, intValue);
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+            }
+            else if (argument.Type == typeof(bool))
+            {
+                bool boolValue = bool.Parse(value);
+                argument.Info.SetValue(objectToFill, boolValue);
+            }
+            else
+            {
+                throw new ArgumentException("Argument of type " + argument.Type.ToString() + " is not supported");
+            }
         }
 
     }
 }
+// TODO: sjednotit velka pismena na zacatku promennych. Nevim jak to ma byt :-(
