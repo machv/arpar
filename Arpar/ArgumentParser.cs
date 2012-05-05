@@ -52,6 +52,12 @@ namespace Arpar
 
                         arg.Attribute = attr;
 
+                        // Check duplicity of argument across all registered arguments
+                        if (ArgumentsByName.ContainsKey(attr.Name))
+                        {
+                            throw new DuplicateArgumentException("Argument name " + attr.Name + " is already registered.");
+                        }
+
                         // Also duplicate name of this argument into Names List for uniform manipulation.
                         arg.Names.Add(new ArgumentAliasAttribute(attr.Name, attr.Type));
                     }
@@ -60,7 +66,12 @@ namespace Arpar
                     {
                         ArgumentAliasAttribute alias = attribute as ArgumentAliasAttribute;
 
-                        //todo: kontrolovat, jestli uz tenhle alias neni pridan (jak pro tenhle argument, tak pro jiny)
+                        // Check duplicity of argument across all registered arguments
+                        if (ArgumentsByName.ContainsKey(alias.Name))
+                        {
+                            throw new DuplicateArgumentException("Argument name " + alias.Name + " is already registered.");
+                        }
+
                         arg.Names.Add(alias);
                     }
                 }
@@ -125,9 +136,24 @@ namespace Arpar
 
             //TODO: do parse
 
+            // Můžeš použít i Dictionary ArgumentsByName, kde klíčem jsou jména argumentů a hodnotou je objekt Argument, mělo by to být rychlejší na prohledávání :-)
+
             int i = 0;
             foreach (string arg in ConsoleArgs)
             {
+                string argumentName = StripArgumentPrefix(arg);
+
+                if (ArgumentsByName.ContainsKey(argumentName))
+                {
+                    Argument argument = ArgumentsByName[argumentName];
+
+                    if (argument.Type == typeof(string))
+                    {
+                        argument.Info.SetValue(ObjectToFill, ConsoleArgs[i + 1]);
+                    }
+                }
+
+                /*
                 foreach (Argument argument in arguments)
                 {
                     if ((GetArgumentPrefix(argument.Attribute.Type) + argument.Attribute.Name) == arg)
@@ -138,8 +164,15 @@ namespace Arpar
                         }
                     }
                 }
+                 */
                 i++;
             }
+        }
+
+        private string StripArgumentPrefix(string arg)
+        {
+            //TODO: tohle udělat pořádně, zatím to je jen quick solution
+            return arg.TrimStart(new char[] { '-' });
         }
 
     }

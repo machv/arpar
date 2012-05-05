@@ -45,6 +45,7 @@
     <Compile Include="ArgumentNameAttribute.cs" />
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types.cs" />
   </ItemGroup>
