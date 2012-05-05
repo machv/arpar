@@ -98,7 +98,16 @@ namespace Arpar
             foreach (Argument argument in arguments)
             {
                 string prefix = GetArgumentPrefix(argument.Attribute.Type);
-                Console.WriteLine("  " + prefix + argument.Attribute.Name + ": " + argument.Attribute.Description);
+                Console.WriteLine("  " + prefix + argument.Attribute.Name + ":\t" + argument.Attribute.Description);
+
+                if (argument.Attribute.ListOfString != null)
+                {
+                    Console.WriteLine("\tList of values for this argument:");
+                    foreach(string value in argument.Attribute.ListOfString)
+                    {
+                        Console.WriteLine("\t\t" + value); // Muze byt udelano i na jedne radce oddelene carkami (stredniky)
+                    }
+                }
             }
 
         }
@@ -262,7 +271,19 @@ namespace Arpar
         {
             if (argument.Type == typeof(string))
             {
-                argument.Info.SetValue(objectToFill, value);
+                if (argument.Attribute.ListOfString == null)
+                {
+                    argument.Info.SetValue(objectToFill, value);
+                }
+                else if (argument.Attribute.ListOfString.Contains(value))
+                {
+                    argument.Info.SetValue(objectToFill, value);
+                }
+                else
+                {
+                    throw new ArgumentException("Value " + value + " is not in the list of supported values");
+                }
+
             }
             else if (argument.Type == typeof(int))
             {

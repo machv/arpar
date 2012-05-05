@@ -16,13 +16,15 @@ namespace TestApplication
             ArgumentParser arpar = new ArgumentParser(sett);
 
             Console.WriteLine(sett.Greetings);
+            Console.WriteLine(sett.BoundedString);
 
             arpar.GenerateDocumentation();
 
             //arpar.Parse(args);
-            arpar.Parse("--text nazdar");
+            arpar.Parse("--text nazdar -bs GAMA");
 
             Console.WriteLine(sett.Greetings);
+            Console.WriteLine(sett.BoundedString);
 
             Console.ReadLine();
         }

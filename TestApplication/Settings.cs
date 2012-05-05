@@ -15,5 +15,9 @@ namespace TestApplication
 
         [Argument("text", ArgumentType.Long, IsMandatory = true, Description = "Hello world text to print.")]
         public string Greetings = "BAF";
+
+        [Argument("bs", ArgumentType.Short, IsMandatory = true, Description = "Bounded string.", ListOfString = new string[]{"ALPHA", "BETA", "GAMA"})]
+        public string BoundedString = "ALPHA";
+        
     }
 }
