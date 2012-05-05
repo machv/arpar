@@ -14,6 +14,6 @@ namespace TestApplication
         public int MaximumLenght = -1;
 
         [Argument("text", ArgumentType.Long, IsMandatory = true, Description = "Hello world text to print.")]
-        public string Greetings;
+        public string Greetings = "BAF";
     }
 }

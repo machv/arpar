@@ -17,6 +17,11 @@ namespace Arpar
         protected object ObjectToFill;
 
         /// <summary>
+        /// Dictionary for searching for Argument by its name (may be used in Parser and when testing duplicity)
+        /// </summary>
+        protected Dictionary<string, Argument> ArgumentsByName = new Dictionary<string, Argument>();
+
+        /// <summary>
         /// Array of arguments accepted in format from main() function.
         /// </summary>
         public string[] ConsoleArgs { get; set; }
@@ -46,6 +51,9 @@ namespace Arpar
                         ArgumentAttribute attr = attribute as ArgumentAttribute;
 
                         arg.Attribute = attr;
+
+                        // Also duplicate name of this argument into Names List for uniform manipulation.
+                        arg.Names.Add(new ArgumentAliasAttribute(attr.Name, attr.Type));
                     }
 
                     if (attribute is ArgumentAliasAttribute)
@@ -53,15 +61,21 @@ namespace Arpar
                         ArgumentAliasAttribute alias = attribute as ArgumentAliasAttribute;
 
                         //todo: kontrolovat, jestli uz tenhle alias neni pridan (jak pro tenhle argument, tak pro jiny)
-                        arg.Aliases.Add(alias);
+                        arg.Names.Add(alias);
                     }
                 }
 
+                // If we matched all required fields than we can insert this into parsed arguments List and include in names Dictionary)
                 if (arg.Attribute != null)
                 {
                     arg.Type = info.FieldType;
                     arg.Info = info;
                     arguments.Add(arg);
+
+                    foreach (ArgumentAliasAttribute alias in arg.Names)
+                    {
+                        ArgumentsByName.Add(alias.Name, arg);
+                    }
                 }
             }
         }
@@ -96,6 +110,10 @@ namespace Arpar
             Parse(ConsoleArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         public void Parse(string[] args)
         {
             ConsoleArgs = args;

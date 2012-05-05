@@ -12,6 +12,7 @@ namespace TestApplication
         static void Main(string[] args)
         {
             Settings sett = new Settings();
+
             ArgumentParser arpar = new ArgumentParser(sett);
 
             Console.WriteLine(sett.Greetings);

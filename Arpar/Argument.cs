@@ -12,7 +12,7 @@ namespace Arpar
     public class Argument
     {
         public ArgumentAttribute Attribute;
-        public List<ArgumentAliasAttribute> Aliases = new List<ArgumentAliasAttribute>();
+        public List<ArgumentAliasAttribute> Names = new List<ArgumentAliasAttribute>();
         public Type Type;
         public FieldInfo Info;
     }
