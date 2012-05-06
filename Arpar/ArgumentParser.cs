@@ -187,6 +187,11 @@ namespace Arpar
             return GetArgumentPrefix(type) + name;
         }
 
+        /// <summary>
+        /// Returns string prefix corresponding to given argument type.
+        /// </summary>
+        /// <param name="type">Type of the argument.</param>
+        /// <returns>Prefix for given argument type.</returns>
         private string GetArgumentPrefix(ArgumentType type)
         {
             switch (type)
@@ -200,6 +205,10 @@ namespace Arpar
             return string.Empty;
         }
 
+        /// <summary>
+        /// Parses arguments from given string.
+        /// </summary>
+        /// <param name="args">String containing the arguments.</param>
         public void Parse(string args)
         {
             ConsoleArgs = args.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -208,9 +217,9 @@ namespace Arpar
         }
 
         /// <summary>
-        /// 
+        /// Parses arguments from given strings and fills theirs values.
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">Field of strings contanining the arguments.</param>
         public void Parse(string[] args) // TODO: parser muze vyhodit vyjimku pri parsovani intu a boolu. Je to treba zdokumentovat.
         {
             ConsoleArgs = args;
@@ -252,6 +261,10 @@ namespace Arpar
 
         }
 
+        /// <summary>
+        /// Checks whether all arguments specified as mandatory has been set.
+        /// </summary>
+        /// <returns>True is all mandatory atributes has been set. False otherwise.</returns>
         private bool AllMandatoryArgumentsSatisfied()
         {
             foreach (Argument arg in arguments)
@@ -263,6 +276,16 @@ namespace Arpar
             return true;
         }
 
+        /// <summary>
+        /// Checks whether the value for the argument can be defined. If it can then tries to load it at first
+        /// from the same argument separated by '='. If it does not succeed tries to load the value from next
+        /// argument. Arguments with denied value has to be bools and they are set to true when they are processed.
+        /// </summary>
+        /// <param name="arg">Processed argument. Can contain itself its value separated by '='.</param>
+        /// <param name="ConsoleArgs">All arguments which are processed. The value of currently processed argument
+        /// can be in the next argument.</param>
+        /// <param name="index">Index of currently processed argument.</param>
+        /// <returns>True if the value has been extracted from the next argument. False otherwise.</returns>
         private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index)
         {
             Argument argument;
@@ -323,6 +346,12 @@ namespace Arpar
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the argument is defined by programer of the application, or it is common argument
+        /// or it is separator of rest of common atributes.
+        /// </summary>
+        /// <param name="arg">The argument of which the type is wanted.</param>
+        /// <returns>Type of the given argument.</returns>
         private CommandLineArgumentType DetermineArgumentType(String arg)
         {
             if (arg == null)
