@@ -91,4 +91,8 @@ Pokud promenna atributu bude nepodporovaneho typu - ArgumentException
 
 Všechny tyto vyjimky obsahují zprávu o podrobnostech, kterou je vhodné vypsat uživateli programu.
 
+Common arguments---TODO
+Seznam obyèejných parametrù lze definovat anotací CommonArgument, ve které se specifikuje popis parametru a to, zda je povinný. Poøadí obyèejných parametrù je dáno poøadím jejich anotací. Takto také budou vypsány požadavky na obyèejné parametry v dokumentaci voleb programu.
 Seznam obyèejných parametrù lze po rozparsování získat z parseru z property CommonArguments.
+pøíklad použití:
+[CommonArgument("InputFile", IsMandatory=true)]
