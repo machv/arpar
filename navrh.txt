@@ -1,0 +1,19 @@
+Návrh knihovny Arpar
+-----------------------------
+
+Vladimír Mach
+Dominik Škoda
+
+
+
+-- Definice argumentù --
+
+Pro zadávání akceptovaných argumentù aplikací jsme se rozhodli použít variantu takovou, kde uživatel si nadefinuje vlastní objekt - tøídu - ve které si naspecifikuje jaké argumenty mají být rozeznávány pomocí promìnných a ty odpovídajícím zpùsobem oanotuje pomocí atributù urèených pro popis chování atributu. Pro definici se musí použít pouze promìnné (vlastnosti jsou pøeskakovány) oznaèené jako public (private se taktéž pøeskakují), protože pro zapsání naètené hodnoty argumentu musíme mít možnost ji do objektu pomocí reflexe zapsat.
+
+Poté, co si uživatel knihovny takto pøipraví objekt s požadovanými argumenty, tak jej pøedá knihovnì, ta už si pomocí reflexe zjistí jaké argumenty s jakými parametry jsou zadávány a pøipraví vnitøní struktury. Poté zavoláním metody Parse se provede naètení hodnot a zjištìné hodnoty argumentù jsou zapsány do uživatelského objektu.
+
+Pro anotaci jsou k dispozici tyto definované atributy:
+ - Argument - základní atribut pro oznaèení že daná promìnná má být považována za argument
+ - BoundedArgument - specializovaný atribut, který dìdí ze základní Argument a navíc umožòuje nastavit meze na hodnotu argumentu, smí být použit pouze pro anotování promìnných typu int (knihovna toto kontroluje)
+ - ChoicesArgument - specializovaný atribut, který taktéž dìdí ze základní Argument a navíc umožòuje nastavit enumeraci stringových hodnot, kterých argument mùže nabývat. Tento atribut smí být použit pouze pro anotování promìnných typu string (knihovna toto také kontroluje).
+ - ArgumentAlias - atribut pro pøidávání dalších aliasù daného argumentu. Jejich poèet není omezen (pouze ze kontroluje unikátnost jména napøíè všemi argumenty)
