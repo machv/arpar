@@ -5,10 +5,13 @@ using System.Text;
 
 namespace Arpar
 {
+    /// <summary>
+    /// Enumeration for type of argument name.
+    /// </summary>
     public enum ArgumentType { Short, Long }
 
     /// <summary>
-    /// Typy parametrů
+    /// Requirements for argument's value.
     /// </summary>
     public enum ParameterRequirements { Mandatory, Optional, Denied }
 
