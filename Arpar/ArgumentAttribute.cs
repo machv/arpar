@@ -6,7 +6,7 @@ using System.Text;
 namespace Arpar
 {
     /// <summary>
-    /// Attribute for altering argument behaviour.
+    /// Base attribute for altering argument behaviour.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class ArgumentAttribute : System.Attribute
@@ -17,7 +17,7 @@ namespace Arpar
         public string Name { get; set; }
 
         /// <summary>
-        /// Type of agrument (Long/Short.)
+        /// Type of agrument.
         /// </summary>
         public ArgumentType Type { get; set; }
 
@@ -32,19 +32,24 @@ namespace Arpar
         public bool IsMandatory { get; set; }
 
         /// <summary>
-        /// Požadavky na hodnotu parametru
+        /// Value requirements.
         /// </summary>
         public ParameterRequirements ValueRequirements { get; set; }
 
-        protected ArgumentAttribute()
-        {
-        }
-
+        /// <summary>
+        /// Initialize attribute with specified name and sets type to long.
+        /// </summary>
+        /// <param name="name">Name of argument.</param>
         public ArgumentAttribute(string name)
             : this(name, ArgumentType.Long)
         {
         }
 
+        /// <summary>
+        /// Initialize attribute.
+        /// </summary>
+        /// <param name="name">Name of argument.</param>
+        /// <param name="type">Type of argument.</param>
         public ArgumentAttribute(string name, ArgumentType type)
         {
             Name = name;

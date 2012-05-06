@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentAttribute.cs" />
-    <Compile Include="ArgumentNameAttribute.cs" />
+    <Compile Include="ArgumentAliasAttribute.cs" />
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="BoundedArgumentAttribute.cs" />
     <Compile Include="ChoicesArgumentAttribute.cs" />

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Arpar
 {
+    /// <summary>
+    /// Specialized type of argument attribute used for integer fields with ability to define upper and lower boundaries.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class BoundedArgumentAttribute : ArgumentAttribute
     {
@@ -18,6 +21,10 @@ namespace Arpar
         /// </summary>
         public int HighBound { get; set; }
 
+        /// <summary>
+        /// Initializes attribute with unlimited boundaries.
+        /// </summary>
+        /// <param name="name">Name of argument.</param>
         public BoundedArgumentAttribute(string name)
             : base(name)
         {
@@ -25,6 +32,11 @@ namespace Arpar
             LowBound = int.MinValue;
         }
 
+        /// <summary>
+        /// Initializes attribute with unlimited boundaries.
+        /// </summary>
+        /// <param name="name">Name of argument.</param>
+        /// <param name="type">Type of argument name.</param>
         public BoundedArgumentAttribute(string name, ArgumentType type)
             : base(name, type)
         {
