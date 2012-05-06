@@ -22,6 +22,16 @@ namespace Arpar
         public ArgumentType Type { get; set; }
 
         /// <summary>
+        /// Initializes attribute with name and long type of name.
+        /// </summary>
+        /// <param name="name">Name for alias.</param>
+        public ArgumentAliasAttribute(string name)
+        {
+            Name = name;
+            Type = ArgumentType.Long;
+        }
+
+        /// <summary>
         /// Initializes attribute.
         /// </summary>
         /// <param name="name">Name for alias.</param>

@@ -13,7 +13,7 @@ namespace TestApplication
         {
             Console.WriteLine("Settings\n");
 
-            Settings sett = new Settings();
+            ExampleSettings1 sett = new ExampleSettings1();
 
             ArgumentParser arpar = null;
             try

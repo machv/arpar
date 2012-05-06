@@ -29,7 +29,7 @@ namespace Arpar
         /// Initializes attribute with argument's name and type.
         /// </summary>
         /// <param name="name">Name of argument.</param>
-        /// <param name="type">Type of argument.</param>
+        /// <param name="type">Type of argument name.</param>
         public ChoicesArgumentAttribute(string name, ArgumentType type)
             : base(name, type)
         {
@@ -50,7 +50,7 @@ namespace Arpar
         /// Initializes attribute with argument's name, type and list of available choices.
         /// </summary>
         /// <param name="name">Argument name.</param>
-        /// <param name="type">Argument type.</param>
+        /// <param name="type">Type of argument name.</param>
         /// <param name="choices">Choices for value.</param>
         public ChoicesArgumentAttribute(string name, ArgumentType type, params string[] choices)
             : base(name, type)
