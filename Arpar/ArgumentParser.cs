@@ -263,7 +263,7 @@ namespace Arpar
             return true;
         }
 
-        private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index) // TODO: pokud bude nutno rozlisovat - a -- jako prefix, musi se sem pridat parametr s typem nacteneho argumentu
+        private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index)
         {
             Argument argument;
             string value = null;
@@ -374,11 +374,6 @@ namespace Arpar
                 int outValue;
                 return int.TryParse(arg, out outValue);
             }
-            /*else if (type == typeof(string)) // TODO: rozhodnout se, co je spravne, jestli jako hodnotu pro string brat cokoli, nebo jen to co nezacina pomlckami
-            {
-                return true;
-            }*/
-
 
             CommandLineArgumentType ArgType = DetermineArgumentType(arg);
 
@@ -415,7 +410,7 @@ namespace Arpar
         {
             if (argument.Type == typeof(string))
             {
-                if (argument.Attribute is ChoicesArgumentAttribute) //Fixed choices argument
+                if (argument.Attribute is ChoicesArgumentAttribute)
                 {
                     ChoicesArgumentAttribute choicesAttribute = argument.Attribute as ChoicesArgumentAttribute;
 
@@ -473,4 +468,3 @@ namespace Arpar
 
     }
 }
-// TODO: sjednotit velka pismena na zacatku promennych. Nevim jak to ma byt :-(
