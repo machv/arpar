@@ -65,7 +65,7 @@ namespace TestApplication
 
             try
             {
-                bs2ap.Parse("--val=DELTA");
+                bs2ap.Parse("-val=DELTA");
             }
             catch (ArgumentException e)
             {

@@ -167,30 +167,25 @@ namespace Arpar
             for (int index = 0; index < ConsoleArgs.Length; index++)
             {
                 string CurrentArg = ConsoleArgs[index];
-                string TrimmedArg = null;
                 CommandLineArgumentType argumentType = DetermineArgumentType(CurrentArg);
 
                 switch (argumentType)
                 {
-                    case CommandLineArgumentType.Short:
-                        TrimmedArg = TrimArgumentPrefix(CurrentArg, ArgumentType.Short);
-                        break;
-                    case CommandLineArgumentType.Long:
-                        TrimmedArg = TrimArgumentPrefix(CurrentArg, ArgumentType.Long);
+                    case CommandLineArgumentType.Defined:                        
+                        bool nextArgumentProcessed = TryLoadValueMoveIndex(CurrentArg, ConsoleArgs, index);
+
+                        if (nextArgumentProcessed)
+                            index++;
                         break;
                     case CommandLineArgumentType.Common:
                         CommonArguments.Add(CurrentArg);
-                        continue;
+                        break;
                     case CommandLineArgumentType.Splitter:
                         CopyRest(ConsoleArgs, CommonArguments, index + 1);
                         index = ConsoleArgs.Length;
-                        continue;
+                        break;
                 }
 
-                bool nextArgumentProcessed = TryLoadValueMoveIndex(TrimmedArg, ConsoleArgs, index);
-
-                if (nextArgumentProcessed)
-                    index++;
 
             }
 
@@ -257,37 +252,16 @@ namespace Arpar
             {
                 return CommandLineArgumentType.Splitter;
             }
-            else if (arg.StartsWith(LongOptionPrefix))
+            else if (arg.StartsWith(LongOptionPrefix) || arg.StartsWith(ShortOptionPrefix))
             {
-                return CommandLineArgumentType.Long;
-            }
-            else if (arg.StartsWith(ShortOptionPrefix))
-            {
-                return CommandLineArgumentType.Short;
+                return CommandLineArgumentType.Defined;
             }
             else
             {
                 return CommandLineArgumentType.Common;
             }
         }
-
-        private string TrimArgumentPrefix(string arg, ArgumentType type)
-        {
-            string TrimmedArg = null;
-
-            switch (type)
-            {
-                case ArgumentType.Short:
-                    TrimmedArg = arg.Remove(0, ShortOptionPrefix.Length);
-                    break;
-                case ArgumentType.Long:
-                    TrimmedArg = arg.Remove(0, LongOptionPrefix.Length);
-                    break;
-            }
-
-            return TrimmedArg;
-        }
-
+        
         private string TrimValueFromArgument(string arg)
         {
             int index = arg.IndexOf(ValueDelimiter);

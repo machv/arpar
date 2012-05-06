@@ -12,5 +12,5 @@ namespace Arpar
     /// </summary>
     public enum ParameterRequirements { Mandatory, Optional, Denied }
 
-    public enum CommandLineArgumentType { Short, Long, Splitter, Common }
+    public enum CommandLineArgumentType { Defined, Splitter, Common }
 }
