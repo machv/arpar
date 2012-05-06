@@ -6,7 +6,7 @@ using Arpar;
 
 namespace TestApplication
 {
-    [CommonArgument("InputFile")]
+    [CommonArgument("InputFile", IsMandatory = true)]
     [CommonArgument("OutputFile")]
     class ExampleSettings2
     {
@@ -51,7 +51,5 @@ namespace TestApplication
         [ChoicesArgument("mode", ArgumentType.Long, Choices= new string[]{"client", "server"}, ValueRequirements=ParameterRequirements.Mandatory, Description="Mode of the application")]
         [ArgumentAlias("m", ArgumentType.Short)]
         public string mode = "client";
-
-        // TODO: description for common arguments inputFile outputFile
     }
 }
