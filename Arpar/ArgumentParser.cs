@@ -126,7 +126,7 @@ namespace Arpar
         /// <returns></returns>
         protected string GetPrefixedArgument(string name, ArgumentType type)
         {
-            return GetArgumentPrefix(type) + type;
+            return GetArgumentPrefix(type) + name;
         }
 
         private string GetArgumentPrefix(ArgumentType type)
