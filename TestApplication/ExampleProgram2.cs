@@ -8,7 +8,6 @@ namespace TestApplication
 {
     class ExampleProgram2
     {
-
         public static void example(String[] args)
         {
             ExampleSettings2 settings = new ExampleSettings2();
@@ -34,11 +33,11 @@ namespace TestApplication
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Error occured during parsing arguments:");
+                Console.WriteLine("\t" + e.Message);
                 Console.WriteLine();
                 parser.GenerateDocumentation();
             }
-
         }
     }
 }

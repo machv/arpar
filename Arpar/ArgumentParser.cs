@@ -431,7 +431,7 @@ namespace Arpar
 
             if (!AllMandatoryArgumentsSatisfied())
             {
-                throw new ArgumentException("All mandatory atributes has not been satisfied");
+                throw new ArgumentException("All mandatory atributes has not been satisfied.");
             }
 
         }
