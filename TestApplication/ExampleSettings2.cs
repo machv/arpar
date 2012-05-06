@@ -6,6 +6,7 @@ using Arpar;
 
 namespace TestApplication
 {
+    [CommonArgument()]
     class ExampleSettings2
     {
         /// <summary>
