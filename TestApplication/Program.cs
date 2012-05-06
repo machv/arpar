@@ -20,7 +20,7 @@ namespace TestApplication
             Console.WriteLine(sett.BoundedString);
 
             arpar.GenerateDocumentation();
-            arpar.Parse("--text nazdar -bs=GAMA");
+            arpar.Parse("--text nazdar -bs=GAMA -len 5");
 
             Console.WriteLine(sett.Greetings);
             Console.WriteLine(sett.BoundedString);

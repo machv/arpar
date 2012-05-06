@@ -190,10 +190,24 @@ namespace Arpar
                         index = ConsoleArgs.Length;
                         break;
                 }
-
-
             }
 
+            if (!AllMandatoryArgumentsSatisfied())
+            {
+                throw new ArgumentException("All mandatory atributes has not been satisfied");
+            }
+
+        }
+
+        private bool AllMandatoryArgumentsSatisfied()
+        {
+            foreach (Argument arg in arguments)
+            {
+                if (arg.Attribute.IsMandatory && !arg.IsSatisfied)
+                    return false;
+            }
+
+            return true;
         }
 
         private bool TryLoadValueMoveIndex(string arg, string[] ConsoleArgs, int index) // TODO: pokud bude nutno rozlisovat - a -- jako prefix, musi se sem pridat parametr s typem nacteneho argumentu
@@ -216,26 +230,15 @@ namespace Arpar
                 throw new ArgumentException("Argument " + arg + " is not supported");
             }
 
+            if(argument.IsSatisfied)
+            {
+                throw new ArgumentException("Argument " + arg + " has been specified several times");
+            }
+
             bool isValue = NextArgumentIsValue(ConsoleArgs, index, argument.Type) || value != null;
             ParameterRequirements valueRequirements = argument.Attribute.ValueRequirements;
 
-            if (isValue && valueRequirements != ParameterRequirements.Denied)
-            {
-                if (value == null)
-                {
-                    LoadValue(argument, ConsoleArgs[index+1]);
-                    return true;
-                }
-                else
-                {
-                    LoadValue(argument, value);
-                }
-            }
-            else if (!isValue && valueRequirements == ParameterRequirements.Mandatory)
-            {
-                throw new ArgumentException("Value for argument " + arg + " is Mandatory and has been omitted");
-            }
-            else if (valueRequirements == ParameterRequirements.Denied)
+            if (valueRequirements == ParameterRequirements.Denied)
             {
                 if(value != null)
                 {
@@ -243,6 +246,25 @@ namespace Arpar
                 }
                 
                 argument.Info.SetValue(ObjectToFill, true);
+                argument.IsSatisfied = true;
+            }
+            else if (isValue)
+            {
+                if (value == null)
+                {
+                    LoadValue(argument, ConsoleArgs[index+1]);
+                    argument.IsSatisfied = true;
+                    return true;
+                }
+                else
+                {
+                    LoadValue(argument, value);
+                    argument.IsSatisfied = true;
+                }
+            }
+            else if (valueRequirements == ParameterRequirements.Mandatory)
+            {
+                throw new ArgumentException("Value for argument " + arg + " is Mandatory and has been omitted");
             }
 
             return false;
