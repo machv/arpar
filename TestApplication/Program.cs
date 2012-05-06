@@ -11,7 +11,9 @@ namespace TestApplication
     {
         static void Main(string[] args) // TODO: zapracovat na hlaskach v error messages
         {
-            Console.WriteLine("Settings\n");
+            ExampleProgram2.example(args);
+
+            /*Console.WriteLine("Settings\n");
 
             ExampleSettings1 sett = new ExampleSettings1();
 
@@ -95,7 +97,7 @@ namespace TestApplication
             {
                 Console.WriteLine(s);
             }
-
+            */
 
             Console.ReadLine();
         }
