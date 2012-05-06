@@ -247,8 +247,34 @@ namespace Arpar
         {
             foreach (Argument argument in arguments)
             {
-                string prefix = GetArgumentPrefix(argument.Attribute.Type);
-                output.WriteLine("  " + prefix + argument.Attribute.Name + ":\t" + argument.Attribute.Description);
+                string valuePattern = string.Empty;
+                switch(argument.Attribute.ValueRequirements)
+                {
+                    case ParameterRequirements.Mandatory:
+                        valuePattern = " <value>";
+                        break;
+                    case ParameterRequirements.Optional:
+                        valuePattern = " [<value>]";
+                        break;
+                    case ParameterRequirements.Denied:
+                        valuePattern = "";
+                        break;
+            }
+
+                output.Write(" ");
+                int i = 0;
+                foreach (KeyValuePair<string, ArgumentAliasAttribute> name in argument.Names)
+                {
+                    output.Write(name.Key + valuePattern);
+                    if (i < argument.Names.Count - 1)
+                    {
+                        output.Write(", ");
+                    }
+
+                    i++;
+                }
+                output.WriteLine();
+                output.WriteLine("\t" + argument.Attribute.Description);
 
                 if (argument.Attribute is ChoicesArgumentAttribute)
                 {
@@ -256,12 +282,20 @@ namespace Arpar
 
                     if (choicesAttribute.Choices != null)
                     {
-                        output.WriteLine("\tList of values for this argument:");
+                        int j = 0;
+                        output.Write("\tList of accepted values for this argument: ");
                         foreach (string value in choicesAttribute.Choices)
                         {
-                            output.WriteLine("\t\t" + value); // Muze byt udelano i na jedne radce oddelene carkami (stredniky)
+                            output.Write(value);
+                            if (j < choicesAttribute.Choices.Length - 1)
+                            {
+                                output.Write(", ");
+                            }
+
+                            j++;
                         }
                     }
+                    output.WriteLine();
                 }
             }
         }
@@ -544,7 +578,7 @@ namespace Arpar
 
         /// <summary>
         /// Determines wherter the argument contains its value.
-        /// Exampla: -a=2.
+        /// Example: -a=2.
         /// </summary>
         /// <param name="argument">Argument to be checked.</param>
         /// <returns>True if the argument contins its value. False otherwise.</returns>
