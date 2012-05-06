@@ -615,15 +615,14 @@ namespace Arpar
                 {
                     BoundedArgumentAttribute boundedAttribute = argument.Attribute as BoundedArgumentAttribute;
 
-                    if (IsInAttributeBoundary(boundedAttribute, intValue))
-                    {
-                        argument.Info.SetValue(ObjectToFill, intValue);
-                    }
-                    else
+                    if (!IsInAttributeBoundary(boundedAttribute, intValue))
                     {
                         throw new ArgumentOutOfRangeException(string.Format("Value for argument {0} is out of range.", argument.Names.First()));
                     }
                 }
+
+                argument.Info.SetValue(ObjectToFill, intValue);
+                
             }
             else if (argument.Type == typeof(bool))
             {
