@@ -73,3 +73,20 @@ budou považovány za dva rùzné argumenty a ne za argument -str a jeho hodnotu -op
 		-str=-opt
 		
 Argumenty, které mají specifikování hodnoty zakázáno musejí být typu bool.
+
+Vyjímky:
+Pokud BoundedArgument bude definován u promìnné, která není typu int - ArgumentException
+Pokud výchozí hodnota promìnné, která má definované meze, není v tìchto mezích - ArgumentOutOfRangeException
+Pokud ChoicesArgument bude definován u promìnné, která není typu string - ArgumentException
+Pokud výchozí hodnota promìnné, která má definované možnosti, není jedna z tìchto možností - ArgumentOutOfRangeException
+Pokud bude definováno více voleb stejného jména - DuplicateArgumentException
+Pokud pøi parsování nejsou naplnìné všechny promìnné, které jsou vyžadovanou volbou - ArgumentException
+Pokud se pøi parsování vyskytne parametr, který nebyl definovaný a nejedná se o obyèejný parametr - ArgumentException
+Pokud pøi parsování bude jeden argument zadán vícekrát - ArgumentException
+Pokud bude specifikována hodnota atributu, který to má zakázané - ArgumentException
+Pokud nebude specifikována hodnota atributy, který to vyžaduje - ArgumentException
+Pokud specifikace hodnoty atributu, který má daný seznam hodnot, není ze seznamu - ArgumentException
+Pokud specifikovaná hodnota atributu, který má dané hranice není v rozsahu - ArgumentOutOfRangeException
+Pokud promenna atributu bude nepodporovaneho typu - ArgumentException
+
+Všechny tyto vyjimky obsahují zprávu o podrobnostech, kterou je vhodné vypsat uživateli programu.
