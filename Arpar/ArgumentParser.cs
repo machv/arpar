@@ -94,37 +94,23 @@ namespace Arpar
                             }
                         }
 
-                        // Check duplicity of argument across all registered arguments
-                        if (ArgumentsByName.ContainsKey(attr.Name))
-                        {
-                            throw new DuplicateArgumentException(string.Format("Argument name {0} is already registered.", attr.Name));
-                        }
-
                         // Also duplicate name of this argument into Names List for uniform manipulation.
                         ArgumentAliasAttribute aliasAttribute = new ArgumentAliasAttribute(attr.Name, attr.Type);
                         string prefixedName = GetPrefixedArgumentName(aliasAttribute);
 
-                        // But before inserting check duplicity within current attribute (because names of current attribute are
-                        //  registered in global ArgumentsByName after all names of currently processed attribute are known)
-                        if (arg.Names.ContainsKey(prefixedName))
-                        {
-                            throw new DuplicateArgumentException(string.Format("This argument has already registered name {0}.", attr.Name));
-                        }
+                        CheckArgumentNameDuplicity(arg, aliasAttribute, prefixedName);
 
                         arg.Names.Add(prefixedName, aliasAttribute);
                     }
 
                     if (attribute is ArgumentAliasAttribute)
                     {
-                        ArgumentAliasAttribute alias = attribute as ArgumentAliasAttribute;
+                        ArgumentAliasAttribute aliasAttribute = attribute as ArgumentAliasAttribute;
+                        string prefixedName = GetPrefixedArgumentName(aliasAttribute);
 
-                        // Check duplicity of argument across all registered arguments
-                        if (ArgumentsByName.ContainsKey(alias.Name))
-                        {
-                            throw new DuplicateArgumentException(string.Format("Argument name {0} is already registered.", alias.Name));
-                        }
+                        CheckArgumentNameDuplicity(arg, aliasAttribute, prefixedName);
 
-                        arg.Names.Add(GetPrefixedArgumentName(alias.Name, alias.Type), alias);
+                        arg.Names.Add(prefixedName, aliasAttribute);
                     }
                 }
 
@@ -141,6 +127,22 @@ namespace Arpar
                         ArgumentsByName.Add(alias.Key, arg);
                     }
                 }
+            }
+        }
+
+        private void CheckArgumentNameDuplicity(Argument arg, ArgumentAliasAttribute aliasAttribute, string prefixedName)
+        {
+            // Check duplicity of argument across all registered arguments
+            if (ArgumentsByName.ContainsKey(aliasAttribute.Name))
+            {
+                throw new DuplicateArgumentException(string.Format("Argument name {0} is already registered.", aliasAttribute.Name));
+            }
+
+            // But before inserting check duplicity within current attribute (because names of current attribute are
+            //  registered in global ArgumentsByName after all names of currently processed attribute are known)
+            if (arg.Names.ContainsKey(prefixedName))
+            {
+                throw new DuplicateArgumentException(string.Format("This argument has already registered name {0}.", aliasAttribute.Name));
             }
         }
 
