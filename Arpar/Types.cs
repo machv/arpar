@@ -6,15 +6,61 @@ using System.Text;
 namespace Arpar
 {
     /// <summary>
-    /// Enumeration for type of argument name.
+    /// Enumeration for type of argument's name (eg. short name).
     /// </summary>
-    public enum ArgumentType { Short, Long }
+    public enum ArgumentType
+    {
+        /// <summary>
+        /// Short name of argument.
+        /// </summary>
+        Short,
+
+        /// <summary>
+        /// Long name of argument.
+        /// </summary>
+        Long
+    }
 
     /// <summary>
     /// Requirements for argument's value.
     /// </summary>
-    public enum ParameterRequirements { Mandatory, Optional, Denied }
+    public enum ParameterRequirements
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        Mandatory,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Optional,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Denied
+    }
 
     //TODO: dokumentace prosím
-    public enum CommandLineArgumentType { Defined, Splitter, Common }
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum CommandLineArgumentType
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        Defined,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Splitter,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Common
+    }
 }
