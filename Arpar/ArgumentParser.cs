@@ -64,7 +64,8 @@ namespace Arpar
                         }
 
                         // Also duplicate name of this argument into Names List for uniform manipulation.
-                        arg.Names.Add(new ArgumentAliasAttribute(attr.Name, attr.Type));
+                        //arg.Names.Add(new ArgumentAliasAttribute(attr.Name, attr.Type));
+                        arg.Names.Add(GetPrefixedArgument(attr.Name, attr.Type), new ArgumentAliasAttribute(attr.Name, attr.Type));
                     }
 
                     if (attribute is ArgumentAliasAttribute)
@@ -77,7 +78,8 @@ namespace Arpar
                             throw new DuplicateArgumentException("Argument name " + alias.Name + " is already registered.");
                         }
 
-                        arg.Names.Add(alias);
+                        arg.Names.Add(GetPrefixedArgument(alias.Name, alias.Type), alias);
+//                        arg.Names.Add(alias);
                     }
                 }
 
@@ -88,14 +90,15 @@ namespace Arpar
                     arg.Info = info;
                     arguments.Add(arg);
 
-                    foreach (ArgumentAliasAttribute alias in arg.Names)
+                    foreach (KeyValuePair<string,ArgumentAliasAttribute> alias in arg.Names)
                     {
-                        ArgumentsByName.Add(alias.Name, arg);
+                        ArgumentsByName.Add(alias.Key, arg);
                     }
                 }
             }
         }
 
+        //TODO: udělat to přes streamy
         public void GenerateDocumentation()
         {
             foreach (Argument argument in arguments)
@@ -113,6 +116,17 @@ namespace Arpar
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Generates fully prefixed name of argument.
+        /// </summary>
+        /// <param name="name">Plain argument name</param>
+        /// <param name="type">Type of argument</param>
+        /// <returns></returns>
+        protected string GetPrefixedArgument(string name, ArgumentType type)
+        {
+            return GetArgumentPrefix(type) + type;
         }
 
         private string GetArgumentPrefix(ArgumentType type)
