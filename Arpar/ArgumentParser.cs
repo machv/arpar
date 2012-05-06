@@ -121,11 +121,11 @@ namespace Arpar
 
             // Common arguments
             object[] classAttributes = type.GetCustomAttributes(false);
-            foreach (object classAttribute in classAttributes)
+            for(int j = classAttributes.Length - 1; j >= 0; j--)
             {
-                if (classAttribute is CommonArgumentAttribute)
+                if (classAttributes[j] is CommonArgumentAttribute)
                 {
-                    AcceptedCommonArguments.Add(classAttribute as CommonArgumentAttribute);
+                    AcceptedCommonArguments.Add(classAttributes[j] as CommonArgumentAttribute);
                 }
             }
 
@@ -285,51 +285,13 @@ namespace Arpar
 
             foreach (Argument argument in arguments)
             {
-                string valueContent = "value";
-                if (argument.Type == typeof(bool))
-                {
-                    valueContent = "true|false";
-                }
-
-                if (argument.Attribute is BoundedArgumentAttribute)
-                {
-                    BoundedArgumentAttribute bounded = argument.Attribute as BoundedArgumentAttribute;
-
-                    valueContent = bounded.LowBound + "," + bounded.HighBound;
-                }
-
-                if (argument.Attribute is ChoicesArgumentAttribute)
-                {
-                    valueContent = "choice";
-                }
-
-                string valuePattern = string.Empty;
-                switch (argument.Attribute.ValueRequirements)
-                {
-                    case ParameterRequirements.Mandatory:
-                        valuePattern = " <" + valueContent + ">";
-                        break;
-                    case ParameterRequirements.Optional:
-                        valuePattern = " [<" + valueContent + ">]";
-                        break;
-                    case ParameterRequirements.Denied:
-                        valuePattern = "";
-                        break;
-                }
+                string valuePattern = GetDocumentationValuePattern(argument);
 
                 output.Write(" ");
                 int i = 0;
                 foreach (KeyValuePair<string, ArgumentAliasAttribute> name in argument.Names)
                 {
-                    if (argument.Attribute.IsMandatory)
-                    {
-                        output.Write("[");
-                    }
                     output.Write(name.Key + valuePattern);
-                    if (argument.Attribute.IsMandatory)
-                    {
-                        output.Write("]");
-                    }
                     if (i < argument.Names.Count - 1)
                     {
                         output.Write(", ");
@@ -338,6 +300,10 @@ namespace Arpar
                     i++;
                 }
                 output.WriteLine();
+                if (argument.Attribute.IsMandatory)
+                {
+                    output.WriteLine("\tThis argument is mandatory.");
+                }
                 if (argument.Attribute.Description != null)
                 {
                     output.WriteLine("\t" + argument.Attribute.Description);
@@ -365,6 +331,42 @@ namespace Arpar
                     output.WriteLine();
                 }
             }
+        }
+
+        private static string GetDocumentationValuePattern(Argument argument)
+        {
+            string valueContent = "value";
+            if (argument.Type == typeof(bool))
+            {
+                valueContent = "true|false";
+            }
+
+            if (argument.Attribute is BoundedArgumentAttribute)
+            {
+                BoundedArgumentAttribute bounded = argument.Attribute as BoundedArgumentAttribute;
+
+                valueContent = bounded.LowBound + "," + bounded.HighBound;
+            }
+
+            if (argument.Attribute is ChoicesArgumentAttribute)
+            {
+                valueContent = "choice";
+            }
+
+            string valuePattern = string.Empty;
+            switch (argument.Attribute.ValueRequirements)
+            {
+                case ParameterRequirements.Mandatory:
+                    valuePattern = " <" + valueContent + ">";
+                    break;
+                case ParameterRequirements.Optional:
+                    valuePattern = " [<" + valueContent + ">]";
+                    break;
+                case ParameterRequirements.Denied:
+                    valuePattern = "";
+                    break;
+            }
+            return valuePattern;
         }
 
         /// <summary>

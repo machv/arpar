@@ -43,12 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BadSettings1.cs" />
-    <Compile Include="BadSettings2.cs" />
     <Compile Include="ExampleProgram1.cs" />
     <Compile Include="ExampleProgram2.cs" />
     <Compile Include="ExampleSettings2.cs" />
-    <Compile Include="GoodSettings1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExampleSettings1.cs" />
