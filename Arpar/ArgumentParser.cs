@@ -57,15 +57,61 @@ namespace Arpar
 
                         arg.Attribute = attr;
 
+                        // Check constraits for boundary argument type
+                        if (attr is BoundedArgumentAttribute)
+                        {
+                            // type
+                            if (info.FieldType != typeof(int))
+                            {
+                                throw new ArgumentException("Bounded argument can be used only with field of type int.");
+                            }
+
+                            // default value
+                            BoundedArgumentAttribute boundedAttribute = attr as BoundedArgumentAttribute;
+                            int intValue = (int)info.GetValue(ObjectToFill);
+
+                            // 0 is default value if no value specified, so we have to skip this value in boundary check
+                            if (intValue != 0 && !IsInAttributeBoundary(boundedAttribute, intValue))
+                            {
+                                throw new ArgumentOutOfRangeException(attr.Name, string.Format("Default value of argument {0} does not meet specified boundaries.", arg.Attribute.Name));
+                            }
+                        }
+
+                        // Check constraints for choices argument type
+                        if (attr is ChoicesArgumentAttribute)
+                        {
+                            if (info.FieldType != typeof(string))
+                            {
+                                throw new ArgumentException("Choices argument can be used only with field of type string.");
+                            }
+
+                            ChoicesArgumentAttribute choicesAttribute = attr as ChoicesArgumentAttribute;
+                            string currentValue = info.GetValue(ObjectToFill) as string;
+
+                            if (currentValue != null && !choicesAttribute.Choices.Contains(currentValue))
+                            {
+                                throw new ArgumentOutOfRangeException(attr.Name, string.Format("Default value {0} of argument {1} is not in allowed choices.", currentValue, arg.Attribute.Name));
+                            }
+                        }
+
                         // Check duplicity of argument across all registered arguments
                         if (ArgumentsByName.ContainsKey(attr.Name))
                         {
-                            throw new DuplicateArgumentException("Argument name " + attr.Name + " is already registered.");
+                            throw new DuplicateArgumentException(string.Format("Argument name {0} is already registered.", attr.Name));
                         }
 
                         // Also duplicate name of this argument into Names List for uniform manipulation.
-                        //arg.Names.Add(new ArgumentAliasAttribute(attr.Name, attr.Type));
-                        arg.Names.Add(GetPrefixedArgument(attr.Name, attr.Type), new ArgumentAliasAttribute(attr.Name, attr.Type));
+                        ArgumentAliasAttribute aliasAttribute = new ArgumentAliasAttribute(attr.Name, attr.Type);
+                        string prefixedName = GetPrefixedArgumentName(aliasAttribute);
+
+                        // But before inserting check duplicity within current attribute (because names of current attribute are
+                        //  registered in global ArgumentsByName after all names of currently processed attribute are known)
+                        if (arg.Names.ContainsKey(prefixedName))
+                        {
+                            throw new DuplicateArgumentException(string.Format("This argument has already registered name {0}.", attr.Name));
+                        }
+
+                        arg.Names.Add(prefixedName, aliasAttribute);
                     }
 
                     if (attribute is ArgumentAliasAttribute)
@@ -75,22 +121,22 @@ namespace Arpar
                         // Check duplicity of argument across all registered arguments
                         if (ArgumentsByName.ContainsKey(alias.Name))
                         {
-                            throw new DuplicateArgumentException("Argument name " + alias.Name + " is already registered.");
+                            throw new DuplicateArgumentException(string.Format("Argument name {0} is already registered.", alias.Name));
                         }
 
-                        arg.Names.Add(GetPrefixedArgument(alias.Name, alias.Type), alias);
-//                        arg.Names.Add(alias);
+                        arg.Names.Add(GetPrefixedArgumentName(alias.Name, alias.Type), alias);
                     }
                 }
 
-                // If we matched all required fields than we can insert this into parsed arguments List and include in names Dictionary)
+                // If we matched all required fields than we can chceck validity and insert this argument into parsed arguments List 
+                //   and include in names Dictionary)
                 if (arg.Attribute != null)
                 {
                     arg.Type = info.FieldType;
                     arg.Info = info;
                     arguments.Add(arg);
 
-                    foreach (KeyValuePair<string,ArgumentAliasAttribute> alias in arg.Names)
+                    foreach (KeyValuePair<string, ArgumentAliasAttribute> alias in arg.Names)
                     {
                         ArgumentsByName.Add(alias.Key, arg);
                     }
@@ -123,13 +169,18 @@ namespace Arpar
 
         }
 
+        protected string GetPrefixedArgumentName(ArgumentAliasAttribute aliasAttribute)
+        {
+            return GetPrefixedArgumentName(aliasAttribute.Name, aliasAttribute.Type);
+        }
+
         /// <summary>
         /// Generates fully prefixed name of argument.
         /// </summary>
         /// <param name="name">Plain argument name</param>
         /// <param name="type">Type of argument</param>
         /// <returns></returns>
-        protected string GetPrefixedArgument(string name, ArgumentType type)
+        protected string GetPrefixedArgumentName(string name, ArgumentType type)
         {
             return GetArgumentPrefix(type) + name;
         }
@@ -176,7 +227,7 @@ namespace Arpar
 
                 switch (argumentType)
                 {
-                    case CommandLineArgumentType.Defined:                        
+                    case CommandLineArgumentType.Defined:
                         bool nextArgumentProcessed = TryLoadValueMoveIndex(CurrentArg, ConsoleArgs, index);
 
                         if (nextArgumentProcessed)
@@ -252,7 +303,7 @@ namespace Arpar
             {
                 if (value == null)
                 {
-                    LoadValue(argument, ConsoleArgs[index+1]);
+                    LoadValue(argument, ConsoleArgs[index + 1]);
                     argument.IsSatisfied = true;
                     return true;
                 }
@@ -275,7 +326,7 @@ namespace Arpar
             if (arg == null)
                 throw new ArgumentNullException("Argument in function DetermineArgumentType has not to be null.");
 
-            if(arg.Equals(Splitter))
+            if (arg.Equals(Splitter))
             {
                 return CommandLineArgumentType.Splitter;
             }
@@ -288,7 +339,7 @@ namespace Arpar
                 return CommandLineArgumentType.Common;
             }
         }
-        
+
         private string TrimValueFromArgument(string arg)
         {
             int index = arg.IndexOf(ValueDelimiter);
@@ -328,13 +379,13 @@ namespace Arpar
 
 
             CommandLineArgumentType ArgType = DetermineArgumentType(arg);
-            
+
             if (ArgType == CommandLineArgumentType.Common)
                 return true;
-            
+
             return false;
         }
-        
+
         private bool ArgumentContainsValue(string arg)
         {
             int index = arg.IndexOf(ValueDelimiter);
@@ -376,7 +427,7 @@ namespace Arpar
                     }
                     else
                     {
-                        throw new ArgumentException("Value " + value + " is not in the list of supported values");
+                        throw new ArgumentException(string.Format("Value {0} is not in the list of supported values.", value));
                     }
                 }
                 else //Regular string value
@@ -392,7 +443,7 @@ namespace Arpar
                 {
                     BoundedArgumentAttribute boundedAttribute = argument.Attribute as BoundedArgumentAttribute;
 
-                    if (intValue >= boundedAttribute.LowBound && intValue <= boundedAttribute.HighBound)
+                    if (IsInAttributeBoundary(boundedAttribute, intValue))
                     {
                         argument.Info.SetValue(ObjectToFill, intValue);
                     }
@@ -409,8 +460,13 @@ namespace Arpar
             }
             else
             {
-                throw new ArgumentException("Argument of type " + argument.Type.ToString() + " is not supported");
+                throw new ArgumentException(string.Format("Argument of type {0} is not supported.", argument.Type.ToString()));
             }
+        }
+
+        private static bool IsInAttributeBoundary(BoundedArgumentAttribute boundedAttribute, int intValue)
+        {
+            return intValue >= boundedAttribute.LowBound && intValue <= boundedAttribute.HighBound;
         }
 
     }
