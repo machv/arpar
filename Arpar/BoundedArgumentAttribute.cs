@@ -8,7 +8,6 @@ namespace Arpar
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class BoundedArgumentAttribute : ArgumentAttribute
     {
-
         /// <summary>
         /// Low bound for integer value.
         /// </summary>

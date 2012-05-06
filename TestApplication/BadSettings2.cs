@@ -8,7 +8,7 @@ namespace TestApplication
 {
     class BadSettings2
     {
-        [Argument("val", ArgumentType.Short, ListOfString = new String[]{"ALPHA", "BETA", "GAMA"})]
+        [ChoicesArgument("val", ArgumentType.Short, Choices = new String[]{"ALPHA", "BETA", "GAMA"})]
         public string value = "ALPHA";
     }
 }

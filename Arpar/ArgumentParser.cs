@@ -106,12 +106,17 @@ namespace Arpar
                 string prefix = GetArgumentPrefix(argument.Attribute.Type);
                 Console.WriteLine("  " + prefix + argument.Attribute.Name + ":\t" + argument.Attribute.Description);
 
-                if (argument.Attribute.ListOfString != null)
+                if (argument.Attribute is ChoicesArgumentAttribute)
                 {
-                    Console.WriteLine("\tList of values for this argument:");
-                    foreach(string value in argument.Attribute.ListOfString)
+                    ChoicesArgumentAttribute choicesAttribute = argument.Attribute as ChoicesArgumentAttribute;
+
+                    if (choicesAttribute.Choices != null)
                     {
-                        Console.WriteLine("\t\t" + value); // Muze byt udelano i na jedne radce oddelene carkami (stredniky)
+                        Console.WriteLine("\tList of values for this argument:");
+                        foreach (string value in choicesAttribute.Choices)
+                        {
+                            Console.WriteLine("\t\t" + value); // Muze byt udelano i na jedne radce oddelene carkami (stredniky)
+                        }
                     }
                 }
             }
@@ -335,19 +340,27 @@ namespace Arpar
         {
             if (argument.Type == typeof(string))
             {
-                if (argument.Attribute.ListOfString == null)
+                if (argument.Attribute is ChoicesArgumentAttribute) //Fixed choices argument
                 {
-                    argument.Info.SetValue(ObjectToFill, value);
-                }
-                else if (argument.Attribute.ListOfString.Contains(value))
-                {
-                    argument.Info.SetValue(ObjectToFill, value);
-                }
-                else
-                {
-                    throw new ArgumentException("Value " + value + " is not in the list of supported values");
-                }
+                    ChoicesArgumentAttribute choicesAttribute = argument.Attribute as ChoicesArgumentAttribute;
 
+                    if (choicesAttribute.Choices == null)
+                    {
+                        argument.Info.SetValue(ObjectToFill, value);
+                    }
+                    else if (choicesAttribute.Choices.Contains(value))
+                    {
+                        argument.Info.SetValue(ObjectToFill, value);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Value " + value + " is not in the list of supported values");
+                    }
+                }
+                else //Regular string value
+                {
+                    argument.Info.SetValue(ObjectToFill, value);
+                }
             }
             else if (argument.Type == typeof(int))
             {

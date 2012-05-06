@@ -11,9 +11,6 @@ namespace Arpar
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class ArgumentAttribute : System.Attribute
     {
-
-        public string[] ListOfString { get; set; }
-
         /// <summary>
         /// Argument name.
         /// </summary>
