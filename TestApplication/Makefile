@@ -10,7 +10,10 @@ CSC_FLAGS=
 TESTAPPEXE=$(TARGET)/TestApplication.exe
 
 SOURCES= Program.cs	\
-	Settings.cs \
+	ExampleProgram1.cs \
+	ExampleProgram2.cs \
+	ExampleSettings1.cs \
+	ExampleSettings2.cs \
 	Properties/AssemblyInfo.cs
 
 CSC = gmcs

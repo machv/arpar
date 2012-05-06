@@ -9,11 +9,15 @@ CSC_FLAGS=
 INIMASTERCOREDLL=$(TARGET)/Arpar.dll
 
 SOURCES= Types.cs	\
-	Argument.cs \
+	ArgumentAliasAttribute.cs \
 	ArgumentAttribute.cs \
-	ArgumentNameAttribute.cs \
+	Argument.cs \
 	ArgumentParser.cs \
-	Arguments.cs \
+	BoundedArgumentAttribute.cs \
+	ChoicesArgumentAttribute.cs \
+	CommonArgumentAttribute.cs \
+	DuplicateArgumentException.cs \
+	UnknownArgumentException.cs \
 	Properties/AssemblyInfo.cs
 
 CSC = gmcs
