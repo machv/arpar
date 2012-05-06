@@ -7,15 +7,82 @@ using System.Text;
 namespace Arpar
 {
     /// <summary>
-    /// Main class for manipulating with command line arguments.
+    /// Main class for handling command line arguments.
     /// </summary>
     public class ArgumentParser
     {
-        protected string ShortOptionPrefix = "-";
-        protected string LongOptionPrefix = "--";
-        protected string Splitter = "--";
-        protected char ValueDelimiter = '=';
-        protected object ObjectToFill;
+        #region Prefixes and splitters
+
+        private static string shortOptionPrefix = "-";
+        /// <summary>
+        /// Prefix for short type of argument.
+        /// </summary>
+        public static string ShortOptionPrefix
+        {
+            get
+            {
+                return shortOptionPrefix;
+            }
+            set
+            {
+                shortOptionPrefix = value;
+            }
+        }
+
+        private static string longOptionPrefix = "--";
+        /// <summary>
+        /// Prefix for long type of argument.
+        /// </summary>
+        public static string LongOptionPrefix
+        {
+            get
+            {
+                return longOptionPrefix;
+            }
+            set
+            {
+                longOptionPrefix = value;
+            }
+        }
+
+        private static string splitter = "--";
+        /// <summary>
+        /// Splitter defining where arguments ends.
+        /// </summary>
+        public static string Splitter
+        {
+            get
+            {
+                return splitter;
+            }
+            set
+            {
+                splitter = value;
+            }
+        }
+        
+        private static char valueDelimiter = '=';
+        /// <summary>
+        /// Delimiter of value for short type of argument
+        /// </summary>
+        public static char ValueDelimiter
+        {
+            get
+            {
+                return valueDelimiter;
+            }
+            set
+            {
+                valueDelimiter = value;
+            }
+        }
+        
+        #endregion
+
+        /// <summary>
+        /// Pointer to user object with definition of arguments.
+        /// </summary>
+        private object ObjectToFill;
 
         /// <summary>
         /// Dictionary for searching for Argument by its name (may be used in Parser and when testing duplicity)
@@ -26,16 +93,20 @@ namespace Arpar
         /// Array of arguments accepted in format from main() function.
         /// </summary>
         public string[] ConsoleArgs { get; set; }
+
+        /// <summary>
+        /// List of all recognized arguments from user's definition object.
+        /// </summary>
         private List<Argument> arguments = new List<Argument>();
 
+        //TODO: zdokumentovat
         public List<String> CommonArguments { get; protected set; }
 
 
-
         /// <summary>
-        /// Constructor.
+        /// Initialize and parse accepted arguments from definition object.
         /// </summary>
-        /// <param name="sett">Object with accepted arguments.</param>
+        /// <param name="sett">Object containing definition of all accepted arguments.</param>
         public ArgumentParser(object sett)
         {
             ObjectToFill = sett;
@@ -44,6 +115,7 @@ namespace Arpar
 
             FieldInfo[] infos = type.GetFields();
 
+            // From reflection read all fields and if are anotated by our attributes, use them in arguments.
             foreach (FieldInfo info in infos)
             {
                 Argument arg = new Argument();
@@ -130,6 +202,12 @@ namespace Arpar
             }
         }
 
+        /// <summary>
+        /// Tests if name of argument is already inserted in our definitions. If yes, then fire corresponding exception.
+        /// </summary>
+        /// <param name="arg">Argument to check for duplicity.</param>
+        /// <param name="aliasAttribute">Attribute containing name and type to be checked.</param>
+        /// <param name="prefixedName">Parsed name containing already right prefix.</param>
         private void CheckArgumentNameDuplicity(Argument arg, ArgumentAliasAttribute aliasAttribute, string prefixedName)
         {
             // Check duplicity of argument across all registered arguments
@@ -146,13 +224,23 @@ namespace Arpar
             }
         }
 
-        //TODO: udělat to přes streamy
+        /// <summary>
+        /// Generates documentation block for accepted arguments and writes it to standard output.
+        /// </summary>
         public void GenerateDocumentation()
+        {
+            GenerateDocumentation(Console.Out);
+        }
+
+        /// <summary>
+        /// Generates documentation block for accepted arguments and writes it text writer output.
+        /// </summary>
+        public void GenerateDocumentation(System.IO.TextWriter output)
         {
             foreach (Argument argument in arguments)
             {
                 string prefix = GetArgumentPrefix(argument.Attribute.Type);
-                Console.WriteLine("  " + prefix + argument.Attribute.Name + ":\t" + argument.Attribute.Description);
+                output.WriteLine("  " + prefix + argument.Attribute.Name + ":\t" + argument.Attribute.Description);
 
                 if (argument.Attribute is ChoicesArgumentAttribute)
                 {
@@ -160,18 +248,22 @@ namespace Arpar
 
                     if (choicesAttribute.Choices != null)
                     {
-                        Console.WriteLine("\tList of values for this argument:");
+                        output.WriteLine("\tList of values for this argument:");
                         foreach (string value in choicesAttribute.Choices)
                         {
-                            Console.WriteLine("\t\t" + value); // Muze byt udelano i na jedne radce oddelene carkami (stredniky)
+                            output.WriteLine("\t\t" + value); // Muze byt udelano i na jedne radce oddelene carkami (stredniky)
                         }
                     }
                 }
             }
-
         }
 
-        protected string GetPrefixedArgumentName(ArgumentAliasAttribute aliasAttribute)
+        /// <summary>
+        /// According to argument's type returns full name with prefix.
+        /// </summary>
+        /// <param name="aliasAttribute">Alias attribute containing name and argument type.</param>
+        /// <returns>Name with corresponding prefix.</returns>
+        private string GetPrefixedArgumentName(ArgumentAliasAttribute aliasAttribute)
         {
             return GetPrefixedArgumentName(aliasAttribute.Name, aliasAttribute.Type);
         }
@@ -179,10 +271,10 @@ namespace Arpar
         /// <summary>
         /// Generates fully prefixed name of argument.
         /// </summary>
-        /// <param name="name">Plain argument name</param>
-        /// <param name="type">Type of argument</param>
-        /// <returns></returns>
-        protected string GetPrefixedArgumentName(string name, ArgumentType type)
+        /// <param name="name">Raw argument name.</param>
+        /// <param name="type">Type of argument.</param>
+        /// <returns>Name with corresponding prefix.</returns>
+        private string GetPrefixedArgumentName(string name, ArgumentType type)
         {
             return GetArgumentPrefix(type) + name;
         }
@@ -206,7 +298,7 @@ namespace Arpar
         }
 
         /// <summary>
-        /// Parses arguments from given string.
+        /// Reads arguments, parse them and write parsed values to definition object passed to constructor.
         /// </summary>
         /// <param name="args">String containing the arguments.</param>
         public void Parse(string args)
@@ -217,10 +309,11 @@ namespace Arpar
         }
 
         /// <summary>
-        /// Parses arguments from given strings and fills theirs values.
+        /// Reads arguments, parse them and write parsed values to definition object passed to constructor.
         /// </summary>
-        /// <param name="args">Field of strings contanining the arguments.</param>
-        public void Parse(string[] args) // TODO: parser muze vyhodit vyjimku pri parsovani intu a boolu. Je to treba zdokumentovat.
+        /// <param name="args">Arguments in string array as passed to main() function.</param>
+        /// <exception cref="ArgumentException">May be thrown during parsing of int or bool value if incorrect value is passed.</exception>
+        public void Parse(string[] args) 
         {
             ConsoleArgs = args;
 
@@ -233,19 +326,21 @@ namespace Arpar
 
             for (int index = 0; index < ConsoleArgs.Length; index++)
             {
-                string CurrentArg = ConsoleArgs[index];
-                CommandLineArgumentType argumentType = DetermineArgumentType(CurrentArg);
+                string currentArg = ConsoleArgs[index];
+                CommandLineArgumentType argumentType = DetermineArgumentType(currentArg);
 
                 switch (argumentType)
                 {
                     case CommandLineArgumentType.Defined:
-                        bool nextArgumentProcessed = TryLoadValueMoveIndex(CurrentArg, ConsoleArgs, index);
+                        bool nextArgumentProcessed = TryLoadValueMoveIndex(currentArg, ConsoleArgs, index);
 
                         if (nextArgumentProcessed)
+                        {
                             index++;
+                        }
                         break;
                     case CommandLineArgumentType.Common:
-                        CommonArguments.Add(CurrentArg);
+                        CommonArguments.Add(currentArg);
                         break;
                     case CommandLineArgumentType.Splitter:
                         CopyRest(ConsoleArgs, CommonArguments, index + 1);
@@ -270,7 +365,9 @@ namespace Arpar
             foreach (Argument arg in arguments)
             {
                 if (arg.Attribute.IsMandatory && !arg.IsSatisfied)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -303,12 +400,12 @@ namespace Arpar
             }
             else
             {
-                throw new ArgumentException("Argument " + arg + " is not supported");
+                throw new ArgumentException(string.Format("Argument {0} is not supported", arg));
             }
 
-            if(argument.IsSatisfied)
+            if (argument.IsSatisfied)
             {
-                throw new ArgumentException("Argument " + arg + " has been specified several times");
+                throw new ArgumentException(string.Format("Argument {0} has been specified several times", arg));
             }
 
             bool isValue = NextArgumentIsValue(ConsoleArgs, index, argument.Type) || value != null;
@@ -316,11 +413,11 @@ namespace Arpar
 
             if (valueRequirements == ParameterRequirements.Denied)
             {
-                if(value != null)
+                if (value != null)
                 {
-                    throw new ArgumentException("Argument " + arg + " has denied value specification");
+                    throw new ArgumentException(string.Format("Argument {0} has denied value specification", arg));
                 }
-                
+
                 argument.Info.SetValue(ObjectToFill, true);
                 argument.IsSatisfied = true;
             }
@@ -340,7 +437,7 @@ namespace Arpar
             }
             else if (valueRequirements == ParameterRequirements.Mandatory)
             {
-                throw new ArgumentException("Value for argument " + arg + " is Mandatory and has been omitted");
+                throw new ArgumentException(string.Format("Value for argument {0} is Mandatory and has been omitted", arg));
             }
 
             return false;
@@ -355,7 +452,9 @@ namespace Arpar
         private CommandLineArgumentType DetermineArgumentType(String arg)
         {
             if (arg == null)
+            {
                 throw new ArgumentNullException("Argument in function DetermineArgumentType has not to be null.");
+            }
 
             if (arg.Equals(Splitter))
             {
@@ -374,7 +473,6 @@ namespace Arpar
         private string TrimValueFromArgument(string arg)
         {
             int index = arg.IndexOf(ValueDelimiter);
-
             string argument = arg.Remove(index);
 
             return argument;
@@ -394,30 +492,21 @@ namespace Arpar
             index++;
 
             if (index >= args.Length)
+            {
                 return false;
+            }
 
-            string arg = args[index];
+            string argument = args[index];
 
             if (type == typeof(int))
             {
                 int outValue;
-                return int.TryParse(arg, out outValue);
+                return int.TryParse(argument, out outValue);
             }
 
-            CommandLineArgumentType ArgType = DetermineArgumentType(arg);
+            CommandLineArgumentType argumentType = DetermineArgumentType(argument);
 
-            if (ArgType == CommandLineArgumentType.Common)
-                return true;
-
-            return false;
-        }
-
-        private bool ArgumentContainsValue(string arg)
-        {
-            int index = arg.IndexOf(ValueDelimiter);
-
-            // the index has not to be the last position of the string, therefor the -1.
-            if (index > 0 && index < arg.Length - 1)
+            if (argumentType == CommandLineArgumentType.Common)
             {
                 return true;
             }
@@ -425,12 +514,25 @@ namespace Arpar
             return false;
         }
 
-        private string GetValueFromArgument(string arg)
+        private bool ArgumentContainsValue(string argument)
         {
-            int index = arg.IndexOf(ValueDelimiter);
+            int index = argument.IndexOf(ValueDelimiter);
+
+            // the index has not to be the last position of the string, therefor the -1.
+            if (index > 0 && index < argument.Length - 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private string GetValueFromArgument(string argument)
+        {
+            int index = argument.IndexOf(ValueDelimiter);
 
             // Wew have to remove the '=' character, therefor the +1.
-            string value = arg.Remove(0, index + 1);
+            string value = argument.Remove(0, index + 1);
 
             return value;
         }
@@ -490,10 +592,15 @@ namespace Arpar
             }
         }
 
+        /// <summary>
+        /// Tests if value is inside required boundaries defined in attribute.
+        /// </summary>
+        /// <param name="boundedAttribute">Attribute containing boundaries to be checked.</param>
+        /// <param name="intValue">Value to be checked if is inside boundaries.</param>
+        /// <returns>True if inside boundaries.</returns>
         private static bool IsInAttributeBoundary(BoundedArgumentAttribute boundedAttribute, int intValue)
         {
             return intValue >= boundedAttribute.LowBound && intValue <= boundedAttribute.HighBound;
         }
-
     }
 }
