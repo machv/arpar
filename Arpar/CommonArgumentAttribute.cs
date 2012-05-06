@@ -6,7 +6,16 @@ using System.Text;
 namespace Arpar
 {
     [AttributeUsage(AttributeTargets.Class)]
-    class CommonArgumentAttribute
+    public class CommonArgumentAttribute : System.Attribute
     {
+        public CommonArgumentAttribute(string description)
+        {
+            Description = description;
+        }
+
+        /// <summary>
+        /// Description of argument - used for generating documentation.
+        /// </summary>
+        public string Description { get; set; }
     }
 }

@@ -7,5 +7,7 @@ namespace Arpar
 {
     class CommonArgument
     {
+
+        public CommonArgumentAttribute Attribute { get; set; }
     }
 }
