@@ -285,14 +285,32 @@ namespace Arpar
 
             foreach (Argument argument in arguments)
             {
+                string valueContent = "value";
+                if (argument.Type == typeof(bool))
+                {
+                    valueContent = "true|false";
+                }
+
+                if (argument.Attribute is BoundedArgumentAttribute)
+                {
+                    BoundedArgumentAttribute bounded = argument.Attribute as BoundedArgumentAttribute;
+
+                    valueContent = bounded.LowBound + "," + bounded.HighBound;
+                }
+
+                if (argument.Attribute is ChoicesArgumentAttribute)
+                {
+                    valueContent = "choice";
+                }
+
                 string valuePattern = string.Empty;
                 switch (argument.Attribute.ValueRequirements)
                 {
                     case ParameterRequirements.Mandatory:
-                        valuePattern = " <value>";
+                        valuePattern = " <" + valueContent + ">";
                         break;
                     case ParameterRequirements.Optional:
-                        valuePattern = " [<value>]";
+                        valuePattern = " [<" + valueContent + ">]";
                         break;
                     case ParameterRequirements.Denied:
                         valuePattern = "";

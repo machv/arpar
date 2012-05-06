@@ -13,7 +13,7 @@ namespace TestApplication
         {
             ExampleProgram1.examples(args);
 
-            //ExampleProgram2.example(args);
+            ExampleProgram2.example(args);
 
             Console.ReadLine();
         }
