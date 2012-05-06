@@ -45,7 +45,6 @@
     <Compile Include="ArgumentAttribute.cs" />
     <Compile Include="ArgumentNameAttribute.cs" />
     <Compile Include="ArgumentParser.cs" />
-    <Compile Include="Arguments.cs" />
     <Compile Include="BoundedArgumentAttribute.cs" />
     <Compile Include="ChoicesArgumentAttribute.cs" />
     <Compile Include="Exceptions.cs" />

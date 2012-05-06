@@ -20,13 +20,13 @@ namespace Arpar
         /// <summary>
         /// Dictionary for searching for Argument by its name (may be used in Parser and when testing duplicity)
         /// </summary>
-        protected Dictionary<string, Argument> ArgumentsByName = new Dictionary<string, Argument>();
+        private Dictionary<string, Argument> ArgumentsByName = new Dictionary<string, Argument>();
 
         /// <summary>
         /// Array of arguments accepted in format from main() function.
         /// </summary>
         public string[] ConsoleArgs { get; set; }
-        protected List<Argument> arguments = new List<Argument>();
+        private List<Argument> arguments = new List<Argument>();
 
         public List<String> CommonArguments { get; protected set; }
 
