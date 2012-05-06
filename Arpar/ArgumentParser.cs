@@ -99,7 +99,9 @@ namespace Arpar
         /// </summary>
         private List<Argument> arguments = new List<Argument>();
 
-        //TODO: zdokumentovat
+        /// <summary>
+        /// List of loaded common arguments from the command line.
+        /// </summary>
         public List<String> CommonArguments { get; protected set; }
 
 
