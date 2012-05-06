@@ -17,3 +17,43 @@ Pro anotaci jsou k dispozici tyto definované atributy:
  - BoundedArgument - specializovaný atribut, který dìdí ze základní Argument a navíc umožòuje nastavit meze na hodnotu argumentu, smí být použit pouze pro anotování promìnných typu int (knihovna toto kontroluje)
  - ChoicesArgument - specializovaný atribut, který taktéž dìdí ze základní Argument a navíc umožòuje nastavit enumeraci stringových hodnot, kterých argument mùže nabývat. Tento atribut smí být použit pouze pro anotování promìnných typu string (knihovna toto také kontroluje).
  - ArgumentAlias - atribut pro pøidávání dalších aliasù daného argumentu. Jejich poèet není omezen (pouze ze kontroluje unikátnost jména napøíè všemi argumenty)
+
+U každého atributu je nutné specifikovat jeho jméno, pod kterým bude rozpoznán mezi argumenty, kromì tohoto jména mùže mít argument libovolné množství dalších jmen - aliasù. Každé jméno mùže být dvojího typu: Long nebo Short pro rozlišení jestli se jedná o krátkou nebo dlouhou volbu (liší se prefixem pøed jménem). Pro snazší používání není nutné typ jména urèovat a jako výchozí hodnota se použije dlouhá varianta.
+
+Výchozí nastavení obsahuje takto nastavené prefixy:
+dvì pomlèky (--) pro dlouhou volbu,
+jednu pomlèku (-) pro krátkou volbu.
+
+Tyto prefixy jdou snadno zmìnit zmìnou statických vlastností ShortOptionPrefix resp. LongOptionPrefix u tøídy ArgumentParser.
+
+u všech typù atributù lze dále specifikovat:
+Description - Popisek, který se používá pro generování dokumentace argumentù-
+IsMandatory - pokud je hodnota nastavena na true, tak pokud tento argument nebude použit, tak parser vyvolá vyjímku.
+ValueRequirements - TODO
+
+
+U BoundedArgument, který lze aplikovat na promìnné typu int, lze navíc specifikovat:
+LowBound - dolní mez pro hodnoty
+HighBound - horní mez pro hodnoty
+
+U ChoicesArgument, který lze aplikovat na promìnné typu string, lze navíc specifikovat:
+Choices - pole stringù hodnot, kterých smí argument nabývat.
+
+Kromì tohoto pole lze využít i upraveného konstruktoru atributu ChoicesArgument, který umožòuje tento pohodlnìjší zápis:
+
+    [ChoicesArgument("gender", "Male", "Female")]
+    public string Gender = "Male";
+
+tento zápis je ekvivalentní zápisu:
+
+    [ChoicesArgument("gender", Choices = new string[] { "Male", "Female" })]
+    public string Gender = "Male";
+
+
+Výchozí hodnoty argumentù lze snadno specifikovat takto:
+
+        [Argument("maxlen")]
+        public int MaximumLenght = 16;
+
+Pokud nebude specifikován atribut --maxlen (pokud není urèen typ parametru, jako výchozí se bere dlouhá varianta), tak jeho hodnota bude 16, pokud budou napøíklad pøedány tyto argumenty: "--maxlen 26" tak se jeho hodnota pøepíše na 26.
+
