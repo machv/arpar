@@ -26,7 +26,7 @@ namespace TestApplication
         public string Gender = "Male";
 
         [ChoicesArgument("gender2", Choices = new string[] { "Male", "Female" })]
-        public string Gender2 = "Neale";
+        public string Gender2 = "Male";
 
     }
 }

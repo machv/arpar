@@ -14,7 +14,17 @@ namespace TestApplication
             Console.WriteLine("Settings\n");
 
             Settings sett = new Settings();
-            ArgumentParser arpar = new ArgumentParser(sett);
+
+            ArgumentParser arpar = null;
+            try
+            {
+                arpar = new ArgumentParser(sett);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unable to parse argument's settings.");
+                Console.WriteLine(e.Message);
+            }
 
             Console.WriteLine(sett.Greetings);
             Console.WriteLine(sett.BoundedString);
