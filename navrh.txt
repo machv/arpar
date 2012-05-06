@@ -90,3 +90,5 @@ Pokud specifikovaná hodnota atributu, který má dané hranice není v rozsahu - Arg
 Pokud promenna atributu bude nepodporovaneho typu - ArgumentException
 
 Všechny tyto vyjimky obsahují zprávu o podrobnostech, kterou je vhodné vypsat uživateli programu.
+
+Seznam obyèejných parametrù lze po rozparsování získat z parseru z property CommonArguments.
