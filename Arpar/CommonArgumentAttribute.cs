@@ -17,7 +17,7 @@ namespace Arpar
         /// <param name="description">Description (name) of common argument.</param>
         public CommonArgumentAttribute(string description)
         {
-            IsMandatory = true;
+            IsMandatory = false;
             Description = description;
         }
 
