@@ -5,11 +5,19 @@ using System.Text;
 
 namespace Arpar
 {
+    /// <summary>
+    /// Attribute to describe common arguments used on class describing arguments.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class CommonArgumentAttribute : System.Attribute
     {
+        /// <summary>
+        /// Initializes attribute with description. Also sets IsMandatory to true.
+        /// </summary>
+        /// <param name="description">Description (name) of common argument.</param>
         public CommonArgumentAttribute(string description)
         {
+            IsMandatory = true;
             Description = description;
         }
 

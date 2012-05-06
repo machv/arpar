@@ -60,7 +60,7 @@ namespace Arpar
                 splitter = value;
             }
         }
-        
+
         private static char valueDelimiter = '=';
         /// <summary>
         /// Delimiter of value for short type of argument
@@ -76,7 +76,7 @@ namespace Arpar
                 valueDelimiter = value;
             }
         }
-        
+
         #endregion
 
         /// <summary>
@@ -247,6 +247,13 @@ namespace Arpar
             }
         }
 
+        private string GetApplicationName()
+        {
+            Assembly assembly = Assembly.GetEntryAssembly();
+
+            return System.IO.Path.GetFileName(assembly.Location);
+        }
+
         /// <summary>
         /// Generates documentation block for accepted arguments and writes it to standard output.
         /// </summary>
@@ -260,9 +267,16 @@ namespace Arpar
         /// </summary>
         public void GenerateDocumentation(System.IO.TextWriter output)
         {
+            output.Write("usage: " + GetApplicationName() + " ");
             foreach (CommonArgumentAttribute attribute in AcceptedCommonArguments)
             {
-                output.Write(attribute.Description + " ");
+                string description = attribute.Description;
+
+                if (!attribute.IsMandatory)
+                {
+                    description = "[" + description + "]";
+                }
+                output.Write(description + " ");
             }
 
             output.WriteLine("<arguments>");
@@ -272,7 +286,7 @@ namespace Arpar
             foreach (Argument argument in arguments)
             {
                 string valuePattern = string.Empty;
-                switch(argument.Attribute.ValueRequirements)
+                switch (argument.Attribute.ValueRequirements)
                 {
                     case ParameterRequirements.Mandatory:
                         valuePattern = " <value>";
@@ -283,7 +297,7 @@ namespace Arpar
                     case ParameterRequirements.Denied:
                         valuePattern = "";
                         break;
-            }
+                }
 
                 output.Write(" ");
                 int i = 0;
@@ -379,7 +393,7 @@ namespace Arpar
         /// </summary>
         /// <param name="args">Arguments in string array as passed to main() function.</param>
         /// <exception cref="ArgumentException">May be thrown during parsing of int or bool value if incorrect value is passed.</exception>
-        public void Parse(string[] args) 
+        public void Parse(string[] args)
         {
             ConsoleArgs = args;
 
@@ -680,7 +694,7 @@ namespace Arpar
                 }
 
                 argument.Info.SetValue(ObjectToFill, intValue);
-                
+
             }
             else if (argument.Type == typeof(bool))
             {
