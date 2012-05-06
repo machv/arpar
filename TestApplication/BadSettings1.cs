@@ -8,7 +8,7 @@ namespace TestApplication
 {
     class BadSettings1
     {
-        [Argument("val", ArgumentType.Short, LowBound=0, HighBound=5)]
+        [BoundedArgument("val", ArgumentType.Short, LowBound=0, HighBound=5)]
         public int value = 0;
     }
 }

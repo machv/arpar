@@ -363,13 +363,18 @@ namespace Arpar
             {
                 int intValue = int.Parse(value);
 
-                if (intValue >= argument.Attribute.LowBound && intValue <= argument.Attribute.HighBound)
+                if (argument.Attribute is BoundedArgumentAttribute)
                 {
-                    argument.Info.SetValue(ObjectToFill, intValue);
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException();
+                    BoundedArgumentAttribute boundedAttribute = argument.Attribute as BoundedArgumentAttribute;
+
+                    if (intValue >= boundedAttribute.LowBound && intValue <= boundedAttribute.HighBound)
+                    {
+                        argument.Info.SetValue(ObjectToFill, intValue);
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
             else if (argument.Type == typeof(bool))

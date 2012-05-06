@@ -39,23 +39,8 @@ namespace Arpar
         /// </summary>
         public ParameterRequirements ValueRequirements { get; set; }
 
-        /// <summary>
-        /// Low bound for integer value.
-        /// </summary>
-        public int LowBound { get; set; } // toto neni treba u vsech parametru, co to mit az v nejake tride, ktera bude dedit od ArgumentAttribute?
-
-        /// <summary>
-        /// High bound for integer value.
-        /// </summary>
-        public int HighBound { get; set; }
-
-        /// <summary>
-        /// Private constructor for setting default values of properties because attributes cannot use nullable types.
-        /// </summary>
-        ArgumentAttribute()
+        protected ArgumentAttribute()
         {
-            HighBound = int.MaxValue;
-            LowBound = int.MinValue;
         }
 
         public ArgumentAttribute(string name)
@@ -64,7 +49,6 @@ namespace Arpar
         }
 
         public ArgumentAttribute(string name, ArgumentType type)
-            : this()
         {
             Name = name;
             Type = type;

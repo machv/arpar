@@ -8,7 +8,7 @@ namespace TestApplication
 {
     class Settings
     {
-        [Argument("maxlen", ArgumentType.Long, IsMandatory = true, Description = "Maximum length of greetings text.", HighBound = 120)]
+        [BoundedArgument("maxlen", ArgumentType.Long, IsMandatory = true, Description = "Maximum length of greetings text.", HighBound = 120)]
         [ArgumentAlias("len", ArgumentType.Short)]
         [ArgumentAlias("délka", ArgumentType.Short)]
         public int MaximumLenght = -1;
