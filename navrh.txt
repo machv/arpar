@@ -96,3 +96,8 @@ Seznam obyèejných parametrù lze definovat anotací CommonArgument, ve které se sp
 Seznam obyèejných parametrù lze po rozparsování získat z parseru z property CommonArguments.
 pøíklad použití:
 [CommonArgument("InputFile", IsMandatory=true)]
+
+Obyèejné parametry jsou nepojmenované stringové hodnoty, které se programu pøedávají v daném poøadí.
+Mùžou být povinné i nepovinné. Po rozparsování dostane Programátor jejich seznam. Pøes obyèejné parametry
+lze jednoduše specifikovat napøíklad vstupní a výstupní soubor, nebo internetová adresa. Díky pevnému
+poøadí tìchto parametrù není tøeba k jejich rozlišení speciálních voleb. 
