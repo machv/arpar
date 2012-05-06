@@ -621,7 +621,7 @@ namespace Arpar
                     }
                     else
                     {
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(string.Format("Value for argument {0} is out of range.", argument.Names.First()));
                     }
                 }
             }
