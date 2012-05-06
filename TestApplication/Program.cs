@@ -9,7 +9,7 @@ namespace TestApplication
 {
     class Program
     {
-        static void Main(string[] args) // TODO: zapracovat na hlaskach v error messages
+        static void Main(string[] args)
         {
             ExampleProgram2.example(args);
 
