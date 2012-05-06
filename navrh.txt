@@ -57,3 +57,19 @@ Výchozí hodnoty argumentù lze snadno specifikovat takto:
 
 Pokud nebude specifikován atribut --maxlen (pokud není urèen typ parametru, jako výchozí se bere dlouhá varianta), tak jeho hodnota bude 16, pokud budou napøíklad pøedány tyto argumenty: "--maxlen 26" tak se jeho hodnota pøepíše na 26.
 
+Hodnota parametru na pøíkazové øádce mùže být zadána tìmito dvìma zpùsoby:
+	
+		-len 5
+		-len=5
+	
+Oba tyto zpùsoby jsou rovnocenné.
+
+Pokud bude mít parametr typu string definovanou hodnotu volitelnì a hodnota bude moci zaèínat pomlèkou, pak argumenty zapsane takto:
+
+		-str -opt
+		
+budou považovány za dva rùzné argumenty a ne za argument -str a jeho hodnotu -opt. Bude-li potøeba aby stringový argument mìl hodnotu zaèínající pomlèkou je tøeba tento zápis:
+
+		-str=-opt
+		
+Argumenty, které mají specifikování hodnoty zakázáno musejí být typu bool.
