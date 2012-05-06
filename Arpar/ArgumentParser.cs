@@ -104,6 +104,10 @@ namespace Arpar
         /// </summary>
         public List<String> CommonArguments { get; protected set; }
 
+        /// <summary>
+        /// List describing accepted common arguments used for documentation.
+        /// </summary>
+        private List<CommonArgumentAttribute> AcceptedCommonArguments = new List<CommonArgumentAttribute>();
 
         /// <summary>
         /// Initialize and parse accepted arguments from definition object.
@@ -115,6 +119,17 @@ namespace Arpar
 
             Type type = ObjectToFill.GetType();
 
+            // Common arguments
+            object[] classAttributes = type.GetCustomAttributes(false);
+            foreach (object classAttribute in classAttributes)
+            {
+                if (classAttribute is CommonArgumentAttribute)
+                {
+                    AcceptedCommonArguments.Add(classAttribute as CommonArgumentAttribute);
+                }
+            }
+
+            // Main aguments
             FieldInfo[] infos = type.GetFields();
 
             // From reflection read all fields and if are anotated by our attributes, use them in arguments.
@@ -245,6 +260,15 @@ namespace Arpar
         /// </summary>
         public void GenerateDocumentation(System.IO.TextWriter output)
         {
+            foreach (CommonArgumentAttribute attribute in AcceptedCommonArguments)
+            {
+                output.Write(attribute.Description + " ");
+            }
+
+            output.WriteLine("<arguments>");
+
+            output.WriteLine("\nAccepted arguments:");
+
             foreach (Argument argument in arguments)
             {
                 string valuePattern = string.Empty;

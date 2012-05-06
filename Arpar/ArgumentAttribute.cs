@@ -37,6 +37,14 @@ namespace Arpar
         public ParameterRequirements ValueRequirements { get; set; }
 
         /// <summary>
+        /// Private constructor for settings default values.
+        /// </summary>
+        protected ArgumentAttribute()
+        {
+            ValueRequirements = ParameterRequirements.Optional;
+        }
+
+        /// <summary>
         /// Initialize attribute with specified name and sets type to long.
         /// </summary>
         /// <param name="name">Name of argument.</param>

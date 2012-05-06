@@ -47,7 +47,6 @@
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="BoundedArgumentAttribute.cs" />
     <Compile Include="ChoicesArgumentAttribute.cs" />
-    <Compile Include="CommonArgument.cs" />
     <Compile Include="CommonArgumentAttribute.cs" />
     <Compile Include="DuplicateArgumentException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
