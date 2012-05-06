@@ -27,17 +27,17 @@ namespace Arpar
     public enum ParameterRequirements
     {
         /// <summary>
-        /// Mandatory value.
+        /// Mandatory value - Value has to be specified.
         /// </summary>
         Mandatory,
 
         /// <summary>
-        /// Optional value.
+        /// Optional value - value can be passed to argument  but is not required.
         /// </summary>
         Optional,
 
         /// <summary>
-        /// Denied value.
+        /// Denied value - argument does not have to have value.
         /// </summary>
         Denied
     }
