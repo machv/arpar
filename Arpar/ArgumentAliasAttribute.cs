@@ -8,7 +8,7 @@ namespace Arpar
     /// <summary>
     /// Attribute for adding aliases to existing argument attribute. May be defined multiple times to same field.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class ArgumentAliasAttribute : System.Attribute
     {
         /// <summary>

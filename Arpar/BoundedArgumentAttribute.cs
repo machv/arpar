@@ -8,7 +8,7 @@ namespace Arpar
     /// <summary>
     /// Specialized type of argument attribute used for integer fields with ability to define upper and lower boundaries.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field)]
     public class BoundedArgumentAttribute : ArgumentAttribute
     {
         /// <summary>

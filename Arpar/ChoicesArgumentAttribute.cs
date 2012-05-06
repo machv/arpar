@@ -8,7 +8,7 @@ namespace Arpar
     /// <summary>
     /// Specialized attribute to define fixed enumeration of available choices for field of type string.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field)]
     public class ChoicesArgumentAttribute : ArgumentAttribute
     {
         /// <summary>

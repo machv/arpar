@@ -8,7 +8,7 @@ namespace Arpar
     /// <summary>
     /// Base attribute for altering argument behaviour.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field)]
     public class ArgumentAttribute : System.Attribute
     {
         /// <summary>
