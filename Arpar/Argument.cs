@@ -15,5 +15,6 @@ namespace Arpar
         public List<ArgumentAliasAttribute> Names = new List<ArgumentAliasAttribute>();
         public Type Type;
         public FieldInfo Info;
+        public bool IsSatisfied;
     }
 }
