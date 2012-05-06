@@ -118,6 +118,12 @@ namespace Arpar
             // From reflection read all fields and if are anotated by our attributes, use them in arguments.
             foreach (FieldInfo info in infos)
             {
+                // Only public fields are allowed to defining arguments (because we need to be able to write value back);
+                if (!info.IsPublic)
+                {
+                    continue;
+                }
+
                 Argument arg = new Argument();
 
                 object[] attributes = info.GetCustomAttributes(false);
