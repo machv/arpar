@@ -7,9 +7,9 @@ using System.Collections;
 namespace Arpar
 {
     /// <summary>
-    /// Exception used when duplicity in definition occures.
+    /// Exception used when duplicity in definition of argument's name occures.
     /// </summary>
-    public class DuplicateArgumentException : System.Exception
+    public class DuplicateArgumentException : System.ArgumentException
     {
         /// <summary>
         /// Initialize exception.

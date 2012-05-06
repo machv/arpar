@@ -408,7 +408,7 @@ namespace Arpar
             }
             else
             {
-                throw new ArgumentException(string.Format("Argument {0} is not supported", arg));
+                throw new UnknownArgumentException(string.Format("Argument {0} is not supported", arg));
             }
 
             if (argument.IsSatisfied)
