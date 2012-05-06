@@ -476,6 +476,12 @@ namespace Arpar
             }
         }
 
+        /// <summary>
+        /// Returns argument name without defined value in its deklaration.
+        /// Example: From -a=2 returns -a.
+        /// </summary>
+        /// <param name="arg">Argument with possibly defined value.</param>
+        /// <returns>Argument name without value deklaration.</returns>
         private string TrimValueFromArgument(string arg)
         {
             int index = arg.IndexOf(ValueDelimiter);
@@ -485,6 +491,13 @@ namespace Arpar
 
         }
 
+        /// <summary>
+        /// Copy rest of the items from source field into destionation list starting
+        /// with the item at position start.
+        /// </summary>
+        /// <param name="source">Source of items to be copied.</param>
+        /// <param name="destination">Destination for copied items.</param>
+        /// <param name="start">Position from which the copiing will be started.</param>
         private void CopyRest(string[] source, List<string> destination, int start)
         {
             for (int index = start; index < source.Length; index++)
@@ -493,6 +506,13 @@ namespace Arpar
             }
         }
 
+        /// <summary>
+        /// Determine whether the next argument could be a value of previous argument.
+        /// </summary>
+        /// <param name="args">Arguments which are processed.</param>
+        /// <param name="index">Index of the currently processed argument.</param>
+        /// <param name="type">Type of the currently processed argument.</param>
+        /// <returns>True if the next argument could be value of currently processed argument. False otherwise.</returns>
         private bool NextArgumentIsValue(string[] args, int index, Type type)
         {
             index++;
@@ -520,6 +540,12 @@ namespace Arpar
             return false;
         }
 
+        /// <summary>
+        /// Determines wherter the argument contains its value.
+        /// Exampla: -a=2.
+        /// </summary>
+        /// <param name="argument">Argument to be checked.</param>
+        /// <returns>True if the argument contins its value. False otherwise.</returns>
         private bool ArgumentContainsValue(string argument)
         {
             int index = argument.IndexOf(ValueDelimiter);
@@ -533,6 +559,11 @@ namespace Arpar
             return false;
         }
 
+        /// <summary>
+        /// Extract the value from the argument and return it in the form of the string.
+        /// </summary>
+        /// <param name="argument">Argument from which the value should be extracted.</param>
+        /// <returns>String form of the extracted value.</returns>
         private string GetValueFromArgument(string argument)
         {
             int index = argument.IndexOf(ValueDelimiter);
@@ -543,6 +574,11 @@ namespace Arpar
             return value;
         }
 
+        /// <summary>
+        /// Loads value into variable representing the given argument.
+        /// </summary>
+        /// <param name="argument">The argument representing the variable.</param>
+        /// <param name="value">Value of the variable in string form.</param>
         private void LoadValue(Argument argument, string value)
         {
             if (argument.Type == typeof(string))
