@@ -303,7 +303,15 @@ namespace Arpar
                 int i = 0;
                 foreach (KeyValuePair<string, ArgumentAliasAttribute> name in argument.Names)
                 {
+                    if (argument.Attribute.IsMandatory)
+                    {
+                        output.Write("[");
+                    }
                     output.Write(name.Key + valuePattern);
+                    if (argument.Attribute.IsMandatory)
+                    {
+                        output.Write("]");
+                    }
                     if (i < argument.Names.Count - 1)
                     {
                         output.Write(", ");
@@ -312,7 +320,10 @@ namespace Arpar
                     i++;
                 }
                 output.WriteLine();
-                output.WriteLine("\t" + argument.Attribute.Description);
+                if (argument.Attribute.Description != null)
+                {
+                    output.WriteLine("\t" + argument.Attribute.Description);
+                }
 
                 if (argument.Attribute is ChoicesArgumentAttribute)
                 {

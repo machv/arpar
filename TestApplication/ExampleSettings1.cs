@@ -15,14 +15,14 @@ namespace TestApplication
         /// Mandatory field text with description and default value "Text to print".
         /// </summary>
         [Argument("text", IsMandatory = true, Description = "Hello world text to print.")]
-        public string Greetings = "Text to print";
+        public string TextToPrint = "Text to print";
 
         /// <summary>
         /// Next mandatory field sec with short type of option and long alias second]
         /// </summary>
         [Argument("second", ArgumentType.Short, IsMandatory = true)]
         [ArgumentAlias("second")]
-        public string Second;
+        public string SecondText;
 
         /// <summary>
         /// Bounded mandatory integer argument maxlength with alias len and default value 32.
