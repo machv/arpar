@@ -54,7 +54,7 @@
     <Compile Include="ExampleSettings1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ArparCore\ArparCore.csproj">
+    <ProjectReference Include="..\Arpar\Arpar.csproj">
       <Project>{0fdbcb4a-5bd5-4ca2-9e6e-17468abe7360}</Project>
       <Name>ArparCore</Name>
     </ProjectReference>
